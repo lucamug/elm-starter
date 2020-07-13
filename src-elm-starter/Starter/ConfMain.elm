@@ -3,7 +3,9 @@ module Starter.ConfMain exposing
     , encoder
     )
 
+import Html.String
 import Json.Encode
+import Starter.ConfMeta
 
 
 type alias Conf =
@@ -15,9 +17,10 @@ type alias Conf =
     , twitterSite : String
     , twitterHandle : String
     , themeColor : String
-    , javascriptThatStartsElm : String
-    , extraHtml : String
     , author : String
+    , snapshotFileName : String
+    , snapshotWidth : Int
+    , snapshotHeight : Int
     }
 
 
@@ -32,7 +35,6 @@ encoder mainConf_ =
         , ( "twitterSite", Json.Encode.string mainConf_.twitterSite )
         , ( "twitterHandle", Json.Encode.string mainConf_.twitterHandle )
         , ( "themeColor", Json.Encode.string mainConf_.themeColor )
-        , ( "javascriptThatStartsElm", Json.Encode.string mainConf_.javascriptThatStartsElm )
-        , ( "extraHtml", Json.Encode.string mainConf_.extraHtml )
         , ( "author", Json.Encode.string mainConf_.author )
+        , ( "snapshotFileName", Json.Encode.string mainConf_.snapshotFileName )
         ]

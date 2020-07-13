@@ -1,4 +1,20 @@
-module Html.String.Extra exposing (..)
+module Html.String.Extra exposing
+    ( body
+    , charset
+    , content
+    , crossorigin
+    , doctype
+    , head
+    , html
+    , httpEquiv
+    , link
+    , meta
+    , noscript
+    , property_
+    , script
+    , style_
+    , title_
+    )
 
 import Html.String exposing (..)
 import Html.String.Attributes exposing (..)

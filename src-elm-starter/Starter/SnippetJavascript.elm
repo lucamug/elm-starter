@@ -1,4 +1,13 @@
-module Starter.SnippetJavascript exposing (..)
+module Starter.SnippetJavascript exposing
+    ( appWorkAlsoWithoutJS
+    , metaInfo
+    , portChangeMeta
+    , portOnUrlChange
+    , portPushUrl
+    , registerServiceWorker
+    , selfInvoking
+    , signature
+    )
 
 import Json.Encode
 
@@ -11,7 +20,6 @@ selfInvoking code =
 metaInfo :
     { gitBranch : String
     , gitCommit : String
-    , versionElmStart : String
     , env : String
     , version : String
     }
@@ -25,7 +33,6 @@ metaInfo args =
                     , ( "branch", Json.Encode.string args.gitBranch )
                     , ( "env", Json.Encode.string args.env )
                     , ( "version", Json.Encode.string args.version )
-                    , ( "versionElmStart", Json.Encode.string args.versionElmStart )
                     ]
     in
     "window.ElmStarter = " ++ metaInfoData ++ ";"
@@ -33,7 +40,7 @@ metaInfo args =
 
 signature : String
 signature =
-    """
+    selfInvoking """
 var color =
     { default: "background: #eee; color: gray; font-family: monospace"
     , love: "background: red; color: #eee"
@@ -61,9 +68,9 @@ console.info
 
 registerServiceWorker : String
 registerServiceWorker =
-    """
+    selfInvoking """
 // From https://developers.google.com/web/tools/workbox/guides/get-started
-if (location.hostname === "localhost") {
+if (location.hostname === "localhost" && location.port === "8000") {
     console.log("NOT loading the service worker in development");
 } else {
     if ('serviceWorker' in navigator) {
@@ -85,8 +92,8 @@ these pages are generated with Puppeteer
 -}
 appWorkAlsoWithoutJS :
     { a
-        | enableJavascriptForBetterExperience : String
-        , youNeedToEnableJavascript : String
+        | messageEnableJavascriptForBetterExperience : String
+        , messageYouNeedToEnableJavascript : String
     }
     -> String
 appWorkAlsoWithoutJS args =
@@ -94,28 +101,10 @@ appWorkAlsoWithoutJS args =
 var noscriptElement = document.querySelector('noscript');
 if (noscriptElement) {
     noscriptElement.innerHTML = noscriptElement.innerHTML.replace
-        ( \"""" ++ args.youNeedToEnableJavascript ++ """"
-        , \"""" ++ args.enableJavascriptForBetterExperience ++ """"
+        ( \"""" ++ args.messageYouNeedToEnableJavascript ++ """"
+        , \"""" ++ args.messageEnableJavascriptForBetterExperience ++ """"
         );
 } """
-
-
-type ElmStarter
-    = ElmStarterStandard
-    | ElmStarterCustomized String
-
-
-elmStarterToString : ElmStarter -> String
-elmStarterToString elmStarter =
-    case elmStarter of
-        ElmStarterStandard ->
-            String.join "\n"
-                [ "var node = document.getElementById('elm');"
-                , "var app = node ? Elm.Main.init( { node: node } ) : Elm.Main.init();"
-                ]
-
-        ElmStarterCustomized string ->
-            string
 
 
 portOnUrlChange : String
@@ -152,7 +141,11 @@ if (ElmApp && ElmApp.ports && ElmApp.ports.changeMeta) {
     ElmApp.ports.changeMeta.subscribe(function(args) {
         var element = document.querySelector(args.querySelector);
         if (element) {
-            element[args.fieldName] = args.content;
+            if (args.type_ == "attribute") {
+                element.setAttribute(args.fieldName, args.content);
+            } else if (args.type_ == "property" && element[args.fieldName]) {
+                element[args.fieldName] = args.content;
+            }
         }
     });
 } """

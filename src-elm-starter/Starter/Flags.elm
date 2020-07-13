@@ -1,5 +1,6 @@
 module Starter.Flags exposing
     ( Dir
+    , Env(..)
     , File
     , Flags
     , dir
@@ -9,6 +10,11 @@ module Starter.Flags exposing
     )
 
 import Json.Encode
+
+
+type Env
+    = Dev
+    | Prod
 
 
 type alias Flags =

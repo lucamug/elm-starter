@@ -4,6 +4,8 @@ module Starter.ConfMeta exposing
     , conf
     )
 
+import Starter.Version
+
 
 type alias FileNames =
     { outputCompiledJs : String
@@ -35,19 +37,23 @@ type alias Conf =
     , portDev : Int
 
     --
-    , versionElmStart : String
+    , versionElmStarter : String
 
     --
     , indentation : Int
 
     -- notifications
-    , doNotEditDisclaimer : String
-    , enableJavascriptForBetterExperience : String
-    , loadingMessage : String
-    , youNeedToEnableJavascript : String
+    , messageDoNotEditDisclaimer : String
+    , messageEnableJavascriptForBetterExperience : String
+    , messageLoading : String
+    , messageYouNeedToEnableJavascript : String
 
     -- file names
     , fileNames : FileNames
+
+    -- tags
+    , tagLoader : String
+    , tagNotification : String
     }
 
 
@@ -59,17 +65,26 @@ conf =
     , portBuild = 9000
 
     --
-    , versionElmStart = "0.0.12"
+    , versionElmStarter = Starter.Version.version
 
     --
     , indentation = 0
 
-    -- notifications
-    , youNeedToEnableJavascript = "You need to enable JavaScript to run this app."
-    , enableJavascriptForBetterExperience = "Enable Javascript for a better experience."
-    , loadingMessage = "L O A D I N G . . ."
-    , doNotEditDisclaimer = "Generated file ** DO NOT EDIT DIRECTLY ** Edit Elm files instead"
+    -- messages
+    , messageYouNeedToEnableJavascript = "You need to enable JavaScript to run this app."
+    , messageEnableJavascriptForBetterExperience = "Enable Javascript for a better experience."
+    , messageLoading = "L O A D I N G . . ."
+    , messageDoNotEditDisclaimer = "Generated file ** DO NOT EDIT DIRECTLY ** Edit Elm files instead"
 
     -- file names
     , fileNames = fileNames
+
+    -- tags
+    , tagLoader = prefix ++ "notification"
+    , tagNotification = prefix ++ "loader"
     }
+
+
+prefix : String
+prefix =
+    "elm-starter-"

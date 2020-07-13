@@ -1,4 +1,4 @@
-module Index exposing (index)
+module Index exposing (htmlToReinject, index)
 
 import Html.String exposing (..)
 import Html.String.Attributes exposing (..)
@@ -33,79 +33,76 @@ index flags =
                                 ; font-family: 'IBM Plex Sans', helvetica, sans-serif
                                 ; margin: 0px;
                                 }""" ]
-                   , style_ []
-                        [ text <|
-                            Starter.SnippetCss.noJsAndLoadingNotifications
-                                tag.notification
-                        ]
                    ]
-                ++ Starter.SnippetHtml.pwa
-                ++ Starter.SnippetHtml.twitterCard
+                ++ Starter.SnippetHtml.messagesStyle
+                ++ Starter.SnippetHtml.pwa Main.conf
+                ++ Starter.SnippetHtml.previewCards Main.conf
             )
         , body []
             ([]
-                ++ [ noscript []
-                        [ div
-                            [ class tag.notification ]
-                            [ text Starter.ConfMeta.conf.youNeedToEnableJavascript ]
-                        ]
-                   , div
-                        [ id tag.loader
-                        , class tag.notification
-                        , style "display" "none"
-                        ]
-                        [ text "L O A D I N G . . ." ]
-                   , div [ id "elm" ] []
-                   , script []
-                        [ textUnescaped <|
-                            "document.getElementById('"
-                                ++ tag.loader
-                                ++ "').style.display = 'block';"
-                        ]
-                   , script [ src "/elm.js" ] []
-                   , script []
-                        [ textUnescaped <|
-                            "document.getElementById('"
-                                ++ tag.loader
-                                ++ "').style.display = 'none';"
-                        ]
-                   ]
+                -- Friendly message in case Javascript is disabled
                 ++ (if flags.env == "dev" then
-                        [ script [ src "/assets-dev/elm-console-debug.js" ] []
-                        , script [] [ textUnescaped "ElmConsoleDebug.register()" ]
-                        ]
+                        Starter.SnippetHtml.messageYouNeedToEnableJavascript
 
                     else
-                        []
+                        Starter.SnippetHtml.messageEnableJavascriptForBetterExperience
                    )
-                ++ List.map
-                    (\jsSnippet ->
-                        script []
-                            [ textUnescaped <| Starter.SnippetJavascript.selfInvoking jsSnippet ]
-                    )
-                    [ Starter.SnippetJavascript.signature
-                    , Starter.SnippetJavascript.metaInfo
-                        { gitBranch = flags.gitBranch
-                        , gitCommit = flags.gitCommit
-                        , env = flags.env
-                        , version = flags.version
-                        , versionElmStart = Starter.ConfMeta.conf.versionElmStart
-                        }
-                    , Starter.SnippetJavascript.appWorkAlsoWithoutJS Starter.ConfMeta.conf
-                    , Main.conf.javascriptThatStartsElm
-                    , Starter.SnippetJavascript.registerServiceWorker
-                    ]
+                -- "Loading..." message
+                ++ Starter.SnippetHtml.messageLoading
+                -- The DOM node that Elm will take over
+                ++ [ div [ id "elm" ] [] ]
+                -- Activating the "Loading..." message
+                ++ Starter.SnippetHtml.messageLoadingOn
+                -- Loading Elm code
+                ++ [ script [ src "/elm.js" ] [] ]
+                -- Elm finished to load, de-activating the "Loading..." message
+                ++ Starter.SnippetHtml.messageLoadingOff
+                -- Loading utility for pretty console formatting
+                ++ Starter.SnippetHtml.prettyConsoleFormatting flags.env
+                -- Signature "Made with ❤ and Elm"
+                ++ [ script [] [ textUnescaped Starter.SnippetJavascript.signature ] ]
+                -- Paasing metadata to Elm, initializing "window.ElmStarter"
+                ++ [ script []
+                        [ textUnescaped <|
+                            Starter.SnippetJavascript.metaInfo
+                                { gitBranch = flags.gitBranch
+                                , gitCommit = flags.gitCommit
+                                , env = flags.env
+                                , version = flags.version
+                                }
+                        ]
+                   ]
+                -- Let's start Elm!
+                ++ [ Html.String.Extra.script []
+                        [ Html.String.textUnescaped
+                            ("""
+                            var node = document.getElementById('elm');
+                            window.ElmApp = Elm.Main.init(
+                                { node: node
+                                , flags:
+                                    { commit: ElmStarter.commit
+                                    , branch: ElmStarter.branch
+                                    , env: ElmStarter.env
+                                    , version: ElmStarter.version
+                                    , width: window.innerWidth
+                                    , height: window.innerHeight
+                                    , languages: window.navigator.userLanguages || window.navigator.languages || []
+                                    , locationHref: location.href
+                                    }
+                                }
+                            );"""
+                                ++ Starter.SnippetJavascript.portOnUrlChange
+                                ++ Starter.SnippetJavascript.portPushUrl
+                                ++ Starter.SnippetJavascript.portChangeMeta
+                            )
+                        ]
+                   ]
+                -- Register the Service Worker, we are a PWA!
+                ++ [ script [] [ textUnescaped Starter.SnippetJavascript.registerServiceWorker ] ]
             )
         ]
 
 
-prefix : String
-prefix =
-    "elm-starter-"
-
-
-tag : { loader : String, notification : String }
-tag =
-    { notification = prefix ++ "notification"
-    , loader = prefix ++ "loader"
-    }
+htmlToReinject : a -> List b
+htmlToReinject _ =
+    []

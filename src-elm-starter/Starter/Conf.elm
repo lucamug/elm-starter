@@ -1,4 +1,7 @@
-module Starter.Conf exposing (Conf, conf)
+module Starter.Conf exposing
+    ( Conf
+    , conf
+    )
 
 import Html.String
 import Html.String.Extra
@@ -29,11 +32,11 @@ fileIndexHtml :
     -> Int
     -> Html.String.Html msg
     -> String
-fileIndexHtml doNotEditDisclaimer indentation startingPage =
+fileIndexHtml messageDoNotEditDisclaimer indentation startingPage =
     Html.String.Extra.doctype
         ++ "\n"
         ++ "<!-- "
-        ++ doNotEditDisclaimer
+        ++ messageDoNotEditDisclaimer
         ++ " -->\n"
         ++ Html.String.toString indentation
             startingPage
@@ -43,19 +46,13 @@ type alias Conf msg =
     { dir : Starter.Flags.Dir
     , file : Starter.Flags.File
     , fileNames : Starter.ConfMeta.FileNames
-
-    --
     , fileIndexHtml : Html.String.Html msg
-
-    --
-    , extraHtml : List (Html.String.Html msg)
+    , htmlToReinject : List (Html.String.Html msg)
     , iconsForManifest : List Int
     , portBuild : Int
     , portDev : Int
     , portStatic : Int
-    , doNotEditDisclaimer : String
-
-    --
+    , messageDoNotEditDisclaimer : String
     , flags : Starter.Flags.Flags
     }
 
@@ -63,23 +60,16 @@ type alias Conf msg =
 conf : Starter.Flags.Flags -> Json.Encode.Value
 conf flags =
     encoder
-        -- TODO - finish to move this stuff inside the encoder
         { dir = Starter.Flags.dir flags
         , file = Starter.Flags.file flags
         , fileNames = Starter.ConfMeta.conf.fileNames
-
-        --
         , fileIndexHtml = Index.index flags
-
-        --
-        , extraHtml = Starter.SnippetHtml.extraHtml Starter.Cache.stuffToCache
+        , htmlToReinject = Index.htmlToReinject flags
         , iconsForManifest = Starter.Icon.iconsForManifest
         , portBuild = Starter.ConfMeta.conf.portBuild
         , portDev = Starter.ConfMeta.conf.portDev
         , portStatic = Starter.ConfMeta.conf.portStatic
-        , doNotEditDisclaimer = Starter.ConfMeta.conf.doNotEditDisclaimer
-
-        --
+        , messageDoNotEditDisclaimer = Starter.ConfMeta.conf.messageDoNotEditDisclaimer
         , flags = flags
         }
 
@@ -104,6 +94,7 @@ encoder args =
             , compilation = Starter.ElmLive.Debug
             , verbose = Starter.ElmLive.VerboseNo
             , reload = Starter.ElmLive.ReloadYes
+            , hotReload = Starter.ElmLive.HotReloadYes
             , dirBin = .bin (Starter.Flags.dir args.flags)
             }
                 |> Starter.ElmLive.elmLive
@@ -118,6 +109,7 @@ encoder args =
             , compilation = Starter.ElmLive.Optimize
             , verbose = Starter.ElmLive.VerboseNo
             , reload = Starter.ElmLive.ReloadNo
+            , hotReload = Starter.ElmLive.HotReloadNo
             , dirBin = .bin (Starter.Flags.dir args.flags)
             }
                 |> Starter.ElmLive.elmLive
@@ -132,6 +124,7 @@ encoder args =
             , compilation = Starter.ElmLive.Normal
             , verbose = Starter.ElmLive.VerboseNo
             , reload = Starter.ElmLive.ReloadNo
+            , hotReload = Starter.ElmLive.HotReloadNo
             , dirBin = .bin (Starter.Flags.dir args.flags)
             }
                 |> Starter.ElmLive.elmLive
@@ -145,14 +138,13 @@ encoder args =
         , ( "batchesSize", Json.Encode.int 4 )
         , ( "snapshots", Json.Encode.bool True )
         , ( "pagesName", Json.Encode.string "index.html" )
-        , ( "snapshotsDir", Json.Encode.string "snapshot" )
-        , ( "snapshotsName", Json.Encode.string "snapshot.jpg" )
-        , ( "snapshotsWidth", Json.Encode.int 400 )
-        , ( "snapshotsHeight", Json.Encode.int 400 )
+        , ( "snapshotFileName", Json.Encode.string Main.conf.snapshotFileName )
+        , ( "snapshotWidth", Json.Encode.int Main.conf.snapshotWidth )
+        , ( "snapshotHeight", Json.Encode.int Main.conf.snapshotHeight )
         , ( "snapshotsQuality", Json.Encode.int 80 )
         , ( "mainConf", Starter.ConfMain.encoder Main.conf )
-        , ( "extraHtml"
-          , args.extraHtml
+        , ( "htmlToReinject"
+          , args.htmlToReinject
                 |> List.map (\html -> Html.String.toString Starter.ConfMeta.conf.indentation html)
                 |> String.join ""
                 |> Json.Encode.string
@@ -188,7 +180,7 @@ encoder args =
                 -- "/index.html"
                 --
                 , ( args.fileNames.indexHtml
-                  , fileIndexHtml args.doNotEditDisclaimer Starter.ConfMeta.conf.indentation args.fileIndexHtml
+                  , fileIndexHtml args.messageDoNotEditDisclaimer Starter.ConfMeta.conf.indentation args.fileIndexHtml
                   )
 
                 -- "/robots.txt"

@@ -9,7 +9,10 @@ import Element.Font as Font
 import Html
 import Html.Attributes
 import Html.Events
+import Html.String
+import Html.String.Extra
 import Json.Decode
+import Starter.ConfMain
 import Starter.SnippetJavascript
 import Svg
 import Svg.Attributes
@@ -17,53 +20,27 @@ import Url
 import Url.Parser exposing ((</>))
 
 
-conf :
-    { assetsToCache : List a
-    , author : String
-    , description : String
-    , domain : String
-    , javascriptThatStartsElm : String
-    , themeColor : String
-    , title : String
-    , twitterHandle : String
-    , twitterSite : String
-    , urls : List String
-    , extraHtml : String
-    }
+conf : Starter.ConfMain.Conf
 conf =
-    { title = "elm-starter - A lightweight Elm bootstrapper"
-    , description = "This application has been bootstrapped with elm-starter. A light way to setup a fully functional Elm application."
+    { title = "elm-starter - An Elm-based Elm bootstrapper"
+    , description = "This application has been bootstrapped with elm-starter. An Elm-based light way to setup a fully functional Elm application."
     , domain = "https://elm-starter.guupa.com"
     , urls = urls
     , assetsToCache = []
     , twitterSite = "lucamug"
     , twitterHandle = "lucamug"
-    , themeColor = "rgb(15, 85, 123)"
-    , javascriptThatStartsElm =
-        """
-            var node = document.getElementById('elm');
-            window.ElmApp = Elm.Main.init(
-                { node: node
-                , flags:
-                    { commit: ElmStarter.commit
-                    , branch: ElmStarter.branch
-                    , env: ElmStarter.env
-                    , version: ElmStarter.version
-                    , versionElmStart: ElmStarter.versionElmStart
-                    , width: window.innerWidth
-                    , height: window.innerHeight
-                    , languages: window.navigator.userLanguages || window.navigator.languages || []
-                    , locationHref: location.href
-                    }
-                }
-            );
-            
-        """
-            ++ Starter.SnippetJavascript.portChangeMeta
-            ++ Starter.SnippetJavascript.portOnUrlChange
-            ++ Starter.SnippetJavascript.portPushUrl
+    , themeColor =
+        "rgb("
+            ++ String.fromInt internalConf.backgroundColor.red
+            ++ ","
+            ++ String.fromInt internalConf.backgroundColor.green
+            ++ ","
+            ++ String.fromInt internalConf.backgroundColor.blue
+            ++ ")"
     , author = "Luca Mugnaini"
-    , extraHtml = ""
+    , snapshotFileName = "snapshot.jpg"
+    , snapshotWidth = 700
+    , snapshotHeight = 350
     }
 
 
@@ -81,9 +58,14 @@ main =
         }
 
 
-internalConf : { urlLabel : String }
+internalConf :
+    { backgroundColor : { blue : number, green : number1, red : number2 }
+    , urlLabel : String
+    }
 internalConf =
-    { urlLabel = "tangram" }
+    { urlLabel = "tangram"
+    , backgroundColor = { red = 15, green = 85, blue = 123 }
+    }
 
 
 
@@ -103,7 +85,6 @@ type alias Flags =
     , branch : String
     , env : String
     , version : String
-    , versionElmStart : String
     , width : Int
     , height : Int
     , languages : List String
@@ -222,17 +203,24 @@ type Msg
 
 updateHtmlMeta : Route -> Cmd msg
 updateHtmlMeta route =
+    let
+        title =
+            "a " ++ String.toUpper (tangramToString (routeToTangram route)) ++ " from " ++ conf.title
+
+        url =
+            conf.domain ++ routeToAbsolutePath route
+
+        image =
+            url ++ "/snapshot.jpg"
+    in
     Cmd.batch
-        [ changeMeta
-            { querySelector = "title"
-            , fieldName = "innerHTML"
-            , content = conf.title ++ " - Here is a " ++ tangramToString (routeToTangram route)
-            }
-        , changeMeta
-            { querySelector = "meta[property='og:image']"
-            , fieldName = "content"
-            , content = conf.domain ++ routeToAbsolutePath route ++ "/snapshot.jpg"
-            }
+        [ changeMeta { type_ = "property", querySelector = "title", fieldName = "innerHTML", content = title }
+        , changeMeta { type_ = "attribute", querySelector = "meta[property='og:title']", fieldName = "content", content = title }
+        , changeMeta { type_ = "attribute", querySelector = "meta[name='twitter:title']", fieldName = "value", content = title }
+        , changeMeta { type_ = "attribute", querySelector = "meta[property='og:image']", fieldName = "content", content = image }
+        , changeMeta { type_ = "attribute", querySelector = "meta[name='twitter:image']", fieldName = "content", content = image }
+        , changeMeta { type_ = "attribute", querySelector = "meta[property='og:url']", fieldName = "content", content = url }
+        , changeMeta { type_ = "attribute", querySelector = "meta[name='twitter:url']", fieldName = "value", content = url }
         ]
 
 
@@ -286,6 +274,7 @@ port changeMeta :
     { querySelector : String
     , fieldName : String
     , content : String
+    , type_ : String
     }
     -> Cmd msg
 
@@ -311,16 +300,9 @@ linkInternal internalLinkClicked attrs args =
         args
 
 
-color : { blue : Color, darkBlue : Color }
-color =
-    { blue = rgb255 18 147 216
-    , darkBlue = rgb255 15 85 123
-    }
-
-
 mouseOverEffect : List (Attr () msg)
 mouseOverEffect =
-    [ alpha 0.6
+    [ alpha 0.8
     , mouseOver [ alpha 1 ]
     , htmlAttribute <| Html.Attributes.style "transition" "0.3s"
     ]
@@ -344,98 +326,118 @@ view model =
         , Html.a [ Html.Attributes.class "skip-link", Html.Attributes.href "#main" ]
             [ Html.text "Skip to main" ]
         , layout
-            [ Background.color <| color.darkBlue
+            [ Background.color <|
+                rgb255
+                    internalConf.backgroundColor.red
+                    internalConf.backgroundColor.green
+                    internalConf.backgroundColor.blue
             , Font.color <| rgb 0.95 0.95 0.95
             , Font.family []
             , Font.size 20
+            , centerY
+            , htmlAttribute <| Html.Attributes.style "height" "100vh"
             ]
           <|
             column
                 [ centerX
                 , centerY
-                , spacing 80
-                , paddingXY 0 40
-                , width (fill |> maximum 600)
+                , spacing 40
+                , width (fill |> maximum 400)
                 ]
-                [ row
-                    [ centerX
-                    , spacing 0
-                    , width fill
-                    ]
-                    [ linkInternal LinkClicked
-                        ([ width (fillPortion 1), height fill ]
-                            ++ mouseOverEffect
-                        )
-                        { label =
-                            el [ width <| px 25 ] <|
-                                html <|
-                                    left
-                                        { id = "previous"
-                                        , title = "Previous"
-                                        , desc = "Go to the previous Tangram"
-                                        , width = 25
-                                        }
-                        , url = routeToAbsolutePath <| RouteTangram <| previousTangram <| routeToTangram model.route
-                        }
-                    , linkInternal LinkClicked
-                        [ width (fillPortion 8)
-                        , htmlAttribute <| Html.Attributes.style "animation" "elmLogoSpin infinite 2.5s ease-in-out"
-                        ]
-                        { label =
-                            html <|
-                                logo (tangramToData <| routeToTangram model.route)
-                                    { id = "tangram"
-                                    , title = "A " ++ tangramToString (routeToTangram model.route) ++ " made of Tangram pieces"
-                                    , desc = "Rotating Tangram"
-                                    , width = 400
-                                    }
-                        , url = routeToAbsolutePath <| RouteTangram <| nextTangram <| routeToTangram model.route
-                        }
-                    , linkInternal LinkClicked
-                        ([ width (fillPortion 1), height fill ]
-                            ++ mouseOverEffect
-                        )
-                        { label =
-                            el [ width <| px 25 ] <|
-                                html <|
-                                    right
-                                        { id = "next"
-                                        , title = "Next"
-                                        , desc = "Go to the next Tangram"
-                                        , width = 25
-                                        }
-                        , url = routeToAbsolutePath <| RouteTangram <| nextTangram <| routeToTangram model.route
-                        }
-                    ]
-                , column
-                    [ spacing 14
-                    , centerX
-                    , paddingXY 20 0
-                    , htmlAttribute <| Html.Attributes.style "word-spacing" "5px"
-                    , htmlAttribute <| Html.Attributes.style "letter-spacing" "1px"
-                    ]
-                    [ paragraph [ Font.center ]
-                        [ text "Bootstrapped with "
-                        , newTabLink [ centerX ]
-                            { label = el linkAttrs <| text "elm-starter"
-                            , url = "https://github.com/lucamug/elm-starter"
-                            }
-                        , text "."
-                        ]
-                    , paragraph [ Font.center ]
-                        [ text "Edit "
-                        , el (Font.family [ Font.monospace ] :: mouseOverEffect) <| text "src/Main.elm"
-                        , text " and save to reload."
-                        ]
-                    , paragraph [ Font.center ]
-                        [ newTabLink [ centerX ]
-                            { label = el linkAttrs <| text "Learn Elm"
-                            , url = "https://elm-lang.org/"
-                            }
-                        , text "."
-                        ]
-                    ]
+                [ viewTangram model.route
+                , viewMessage
                 ]
+        ]
+
+
+viewTangram : Route -> Element Msg
+viewTangram route =
+    row
+        [ centerX
+        , spacing 0
+        , width fill
+        ]
+        [ linkInternal LinkClicked
+            ([ height fill
+             , width <| px 48
+             ]
+                ++ mouseOverEffect
+            )
+            { label =
+                el [ centerX ] <|
+                    html <|
+                        left
+                            { id = "previous"
+                            , title = "Previous"
+                            , desc = "Go to the previous Tangram"
+                            , width = 32
+                            }
+            , url = routeToAbsolutePath <| RouteTangram <| previousTangram <| routeToTangram route
+            }
+        , linkInternal LinkClicked
+            [ htmlAttribute <| Html.Attributes.style "animation" "elmLogoSpin infinite 2.5s ease-in-out"
+            , width fill
+            ]
+            { label =
+                html <|
+                    logo (tangramToData <| routeToTangram route)
+                        { id = "tangram"
+                        , title = "A " ++ tangramToString (routeToTangram route) ++ " made of Tangram pieces"
+                        , desc = "Rotating Tangram"
+                        , width = 250
+                        }
+            , url = routeToAbsolutePath <| RouteTangram <| nextTangram <| routeToTangram route
+            }
+        , linkInternal LinkClicked
+            ([ width (fillPortion 1)
+             , height fill
+             , width <| px 48
+             ]
+                ++ mouseOverEffect
+            )
+            { label =
+                el [ centerX ] <|
+                    html <|
+                        right
+                            { id = "next"
+                            , title = "Next"
+                            , desc = "Go to the next Tangram"
+                            , width = 32
+                            }
+            , url = routeToAbsolutePath <| RouteTangram <| nextTangram <| routeToTangram route
+            }
+        ]
+
+
+viewMessage : Element msg
+viewMessage =
+    column
+        [ spacing 14
+        , centerX
+        , paddingXY 20 0
+        , htmlAttribute <| Html.Attributes.style "word-spacing" "5px"
+        , htmlAttribute <| Html.Attributes.style "letter-spacing" "1px"
+        ]
+        [ paragraph [ Font.center ]
+            [ text "Bootstrapped with "
+            , newTabLink [ centerX ]
+                { label = el linkAttrs <| text "elm-starter"
+                , url = "https://github.com/lucamug/elm-starter"
+                }
+            , text "."
+            ]
+        , paragraph [ Font.center ]
+            [ text "Edit "
+            , el (Font.family [ Font.monospace ] :: mouseOverEffect) <| text "src/Main.elm"
+            , text " and save to reload."
+            ]
+        , paragraph [ Font.center ]
+            [ newTabLink [ centerX ]
+                { label = el linkAttrs <| text "Learn Elm"
+                , url = "https://elm-lang.org/"
+                }
+            , text "."
+            ]
         ]
 
 

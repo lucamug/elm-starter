@@ -1,4 +1,4 @@
-port module Worker exposing (..)
+port module Worker exposing (main)
 
 import Json.Encode
 import Starter.Conf

@@ -1,20 +1,38 @@
 # elm-starter
 
-`elm-starter` is an experimental Elm bootstrapper that can also be plugged into already existing Elm applications. 
+`elm-starter` is an experimental Elm-based Elm bootstrapper that can also be plugged into an already existing Elm applications. 
 
-### Demos
-
-These are two simple examples of websites built with `elm-starter`:
-
-* https://elm-starter.guupa.com/
-* https://elm-todomvc.guupa.com/
+Example of the installed version, with and without Javascript enabled:
 
 ![elm-starter](assets/dev/elm-starter.gif)
 
-## Characteristics
+
+### Demos
+
+These are three simple examples of websites built with `elm-starter`:
+
+* https://elm-starter.guupa.com/ [Code](https://github.com/lucamug/elm-starter)
+* https://elm-todomvc.guupa.com/ [Code](https://github.com/lucamug/elm-todomvc)
+* https://elm-spa-example.guupa.com/ [Code](https://github.com/lucamug/elm-spa-example)
+
+![elm-starter](assets/dev/collection.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Characteristics
 
 * Generate a PWA (Progressive Web Application)
-* Most of the logic is written in Elm, including all the necessary files that are automatically generated:
+* Most of the logic is written in Elm, including the code to generate all necessary files:
     * `index.html` (generated from [`Index.elm`](https://github.com/lucamug/elm-start-private/blob/master/src/Index.elm) using [`zwilias/elm-html-string`](https://package.elm-lang.org/packages/zwilias/elm-html-string/latest/))
     * [`sitemap.txt`](https://elm-starter.guupa.com/sitemap.txt)
     * [`manifest.json`](https://elm-starter.guupa.com/manifest.json)
@@ -32,6 +50,9 @@ These are two simple examples of websites built with `elm-starter`:
 * Hopefully relatively simple to use and maintain
 * Works with Netlify, Surge, etc.
 
+Lighthouse report:
+
+![elm-starter](assets/dev/lighthouse.png)
 
 
 
@@ -44,6 +65,10 @@ These are two simple examples of websites built with `elm-starter`:
 
 # How to bootstrap a new project
 
+`elm-starter` is not published in npm yet and it doesn't have a specific command to bootstrap a project, so the way it works now is cloning this repo.
+
+The steps are:
+
 ```
 $ git clone https://github.com/lucamug/elm-starter
 $ mv elm-starter my-new-project
@@ -51,10 +76,7 @@ $ cd my-new-project
 $ rm -rf .git
 $ npm install
 ```
-
-## Available Scripts
-
-In the project directory, you can run:
+Done! At this point, these are the available commands:
 
 ### `$ npm start`
 
@@ -84,13 +106,13 @@ Open [http://localhost:9000](http://localhost:9000) to view it in the browser.
 
 # How to use `elm-starter` in existing Elm application
 
-Let's suppose your exsisting project is in `my-elm-app`
+Let's suppose your existing project is in `my-elm-app`
 
-* Clone `https://github.com/lucamug/elm-starter`
-* Copy
-   * The folder `elm-starter/src-elm-starter/` to `my-elm-app/src-elm-starter/`
-   * The file `elm-starter/src/Index.elm` to `my-elm-app/src/Index.elm`
-   * The function `conf` from `elm-starter/src/Main.elm` to `my-elm-app/src/Main.elm` (remember to expose it)
+* Clone `elm-starter` with<br> 
+    `$ git clone https://github.com/lucamug/elm-starter.git`
+* Copy the folder [`elm-starter/src-elm-starter/`](https://github.com/lucamug/elm-starter/tree/master/src-elm-starter) to `my-elm-app/src-elm-starter/`
+* Copy the file [`elm-starter/src/Index.elm`](https://github.com/lucamug/elm-starter/blob/master/src/Index.elm) to `my-elm-app/src/Index.elm`
+* Copy the function `conf` from [`elm-starter/src/Main.elm`](https://github.com/lucamug/elm-starter/blob/master/src/Main.elm#L33) to `my-elm-app/src/Main.elm` (remember also to expose it)
 * If you don't have `package.json` in your project, add one with `$ npm init`
 * Add `node` dependencies with these commands 
     ```
@@ -102,7 +124,7 @@ Let's suppose your exsisting project is in `my-elm-app`
     $ npm install --save-dev puppeteer
     $ npm install --save-dev terser
     ```
-* Add `src-elm-starter` as extra `source-directory` in `elm.json`, the same as in `elm-starter/elm.json`
+* Add `src-elm-starter` as an extra `source-directory` in `elm.json`, the same as in `elm-starter/elm.json`
 * Add these commands to `package.json` (or run them directly)
     ```
       "scripts": {
@@ -127,7 +149,6 @@ When setting up the app with Netlify, input these in the deploy configuration:
 
 * Build command: `npm run build` (or `node ./src-elm-starter/starter.js start`)
 * Publish directory: `elm-stuff/elm-starter-files/build`
-    
 
 
 
@@ -135,13 +156,19 @@ When setting up the app with Netlify, input these in the deploy configuration:
 
 
 
-# (\*) About the application working wihtout Javascript
 
-Working without Javascript depends on the application. The `elm-starter` example works completely fine also wihtout Javascript, the only missing thing is the smooth transition between pages.
 
-The `todo-mvc` example instead require Javascript. Note that in this example, compared to Evan's original TodoMVC, I slightly changed the CSS to improve the a11y (mainly lack of contrast and fonts too small).
+# (\*) Aapplications working without Javascript
 
-These two example use `Browser.element` but I tested also with `Browser.application` and it seems working.
+Working without Javascript depends on the application. The `elm-starter` example works completely fine also without Javascript, the only missing thing is the smooth transition between pages.
+
+The `elm-todomvc` example requires Javascript. Note that in this example, compared to Evan's original TodoMVC, I slightly changed the CSS to improve the a11y (mainly lack of contrast and fonts too small).
+
+The `elm-spa-example` partially works without Javascript. You can browser accross pages but the counters are not working.
+
+`elm-starter` annd `elm-todomvc` use `Browser.element`, while `elm-spa-example` use `Browser.application`.
+
+The setup for these two cases is a bit different. `Browser.application` require to use `htmlToReinject` (see `Index.elm`) because Elm is wiping out all the content in the body. Also the node where Elm attach itself need to be removed (see `node.remove()` ).
 
 The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These files are automatically generated and should not be edited directly, unless during some debugging process.
 
@@ -183,24 +210,23 @@ Support https://github.com/kraklin/elm-debug-transformer out of the box for nice
 
 ## Changing meta-tags
 
-For better SEO, you should update meta-tags. To do so, there is pre-defined port `changeMeta` that you can use this way:
+For better SEO, you should update meta-tags using the predefined port `changeMeta` that you can use this way:
 
 ```
-updateHtmlMeta : Route -> Cmd msg
-updateHtmlMeta route =
-    Cmd.batch
-        [ changeMeta
-            { querySelector = "title"
-            , fieldName = "innerHTML"
-            , content = conf.title ++ " - Here is a " ++ tangramToString (routeToTangram route)
-            }
-        , changeMeta
-            { querySelector = "meta[property='og:image']"
-            , fieldName = "content"
-            , content = conf.domain ++ routeToAbsolutePath route ++ "/snapshot.jpg"
-            }
-        ]
+Cmd.batch
+    [ changeMeta { querySelector = "title", fieldName = "innerHTML", content = title }
+    , changeMeta { querySelector = "meta[property='og:title']", fieldName = "content", content = title }
+    , changeMeta { querySelector = "meta[name='twitter:title']", fieldName = "value", content = title }
+    , changeMeta { querySelector = "meta[property='og:image']", fieldName = "content", content = image }
+    , changeMeta { querySelector = "meta[name='twitter:image']", fieldName = "content", content = image }
+    , changeMeta { querySelector = "meta[property='og:url']", fieldName = "content", content = url }
+    , changeMeta { querySelector = "meta[name='twitter:url']", fieldName = "value", content = url }
+    ]
 ```
+
+You can validate Twitter preview cards at https://cards-dev.twitter.com/validator
+
+![elm-starter](assets/dev/twitter-card.jpg)
 
 ## Configuration
 
@@ -212,21 +238,46 @@ and check the page
 
 http://localhost:8000/src-elm-starter/Application.elm
 
-## Meta-data
+## Globally available objects
 
-The global object `ElmStarter` contain metadata about the app:
+There are three global objects available
+
+### `ElmStarter`
+
+`ElmStarter` contain metadata about the app:
 ```
-{ commit: "abf04f3"
-, branch: "master"
-, env: "dev"
-, version: "0.0.5"
-, versionElmStart: "0.0.12"
+{ commit: "abf04f3"   // coming from git
+, branch: "master"    // coming from git 
+, env: "dev"          // can be "dev" or "prod"
+, version: "0.0.5"    // coming from package.json
 }
 ```
 
 This data is also available in Elm through Flags.
 
-`ElmApp` is another global object that is the handle of the Elm app.
+### `ElmApp`
+
+`ElmApp` is another global object that contains the handle of the Elm app.
+
+### `Elm`
+
+This is the object exposed by the compiler used to initialize the application.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -235,8 +286,13 @@ This data is also available in Elm through Flags.
 
 # Limitations
 
-* Javascript and CSS to generate the initial `index.html` are strings :-(
-* `src-elm-starter/starter.js`, the core of `elm-starter`, is ~400 lines of Javascript. I wish it could be smaller
+* Javascript and CSS to generate the initial `index.html` are actually strings :-(
+* `src-elm-starter/starter.js`, the core of `elm-starter`, is ~330 lines of Javascript. I wish it could be smaller
+* If your Elm code rely on data only available at runtime, such as window size or dark mode, prerendering is probably not the right approach. In this case you may consider [disabling pre-rendering](#disabling-pre-rendering) and use other alternatives, such as [Netlify prerendering](https://docs.netlify.com/site-deploys/post-processing/prerendering/#set-up-prerendering)
+
+Note
+
+* The smooth rotational transition in the demo only works in Chrome. I realized it too late, but you get the picture
 
 
 
@@ -245,27 +301,19 @@ This data is also available in Elm through Flags.
 
 
 
+# Non-goals
 
+Things that `elm-starter` is not expected to do 
 
-# Similar projects
-
-These are other projects that can be used to bootstrap an Elm application or to generate a static site:
-
-* [elm-pages](https://package.elm-lang.org/packages/dillonkearns/elm-pages/latest/)
-* [elmstatic](https://github.com/alexkorban/elmstatic)
-* [elm-spa](https://package.elm-lang.org/packages/ryannhg/elm-spa/latest/)
-* [create-elm-app](https://github.com/halfzebra/create-elm-app)
-* [spades](https://github.com/rogeriochaves/spades)
-
-Something that `elm-starter` doesn't do 
-
-* Doesn't generate Elm code automatically, like Routes parser
-* Doens't do SSR (Server Side Render) but just pre-render during the build.=
-* Doesn't change the Elm compiled Javascirpt
-* Doesn't create a web site based from static files
+* Doesn't generate Elm code automatically, like Route-parser, for example
+* Doesn't do SSR (Server Side Render) but just pre-render during the build
+* Doesn't change the Javascript coming out from the Elm compiler
+* Doesn't create a web site based on static files containing Markdown
 * There is no "[hydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web)", unless Elm does some magic that I am not aware of. 
 
-Considering the table at the bottom of [this article](https://developers.google.com/web/updates/2019/02/rendering-on-the-web), `elm-starter` can support you in these rendering approach
+You can find several of these characteristics in some of the [similar projects](#similar-projects).
+
+Using as reference the table at the bottom of the article [Rendering on the Web](https://developers.google.com/web/updates/2019/02/rendering-on-the-web), `elm-starter` can support you in these rendering approach
 
 * Static SSR
 * CSR with Prerendering
@@ -280,3 +328,16 @@ It cannot help you with
 
 
  
+ 
+ 
+# Similar projects
+
+These are other projects that can be used to bootstrap an Elm application or to generate a static site:
+
+* [elm-pages](https://package.elm-lang.org/packages/dillonkearns/elm-pages/latest/)
+* [elmstatic](https://github.com/alexkorban/elmstatic)
+* [elm-spa](https://package.elm-lang.org/packages/ryannhg/elm-spa/latest/)
+* [create-elm-app](https://github.com/halfzebra/create-elm-app)
+* [spades](https://github.com/rogeriochaves/spades)
+
+

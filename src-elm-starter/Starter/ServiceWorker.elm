@@ -1,4 +1,8 @@
-module Starter.ServiceWorker exposing (..)
+module Starter.ServiceWorker exposing
+    ( encoderCacheableUrls
+    , precacheFiles
+    , serviceWorker
+    )
 
 import Json.Encode
 import Starter.Cache
@@ -31,7 +35,7 @@ precacheFiles =
 serviceWorker : String
 serviceWorker =
     """/* """
-        ++ Starter.ConfMeta.conf.doNotEditDisclaimer
+        ++ Starter.ConfMeta.conf.messageDoNotEditDisclaimer
         ++ """ */
 
 //

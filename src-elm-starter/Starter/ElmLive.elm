@@ -1,6 +1,7 @@
 module Starter.ElmLive exposing
     ( Compilation(..)
-    , ElmLive
+    , ElmLiveArgs
+    , HotReload(..)
     , Reload(..)
     , Verbose(..)
     , elmLive
@@ -10,7 +11,7 @@ module Starter.ElmLive exposing
 import Json.Encode
 
 
-type alias ElmLive =
+type alias ElmLiveArgs =
     { dir : String
     , outputCompiledJs : String
     , indexHtml : String
@@ -18,6 +19,7 @@ type alias ElmLive =
     , compilation : Compilation
     , verbose : Verbose
     , reload : Reload
+    , hotReload : HotReload
     , elmFileToCompile : String
     , dirBin : String
     }
@@ -34,12 +36,17 @@ type Reload
     | ReloadNo
 
 
+type HotReload
+    = HotReloadYes
+    | HotReloadNo
+
+
 type Verbose
     = VerboseYes
     | VerboseNo
 
 
-elmLive : ElmLive -> { command : String, parameters : List String }
+elmLive : ElmLiveArgs -> { command : String, parameters : List String }
 elmLive args =
     { command = args.dirBin ++ "/elm-live"
     , parameters =
@@ -55,6 +62,13 @@ elmLive args =
                         [ "--verbose" ]
 
                     VerboseNo ->
+                        []
+               )
+            ++ (case args.hotReload of
+                    HotReloadYes ->
+                        [ "--hot" ]
+
+                    HotReloadNo ->
                         []
                )
             ++ (case args.reload of

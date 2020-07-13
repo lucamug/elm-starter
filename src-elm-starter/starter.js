@@ -244,13 +244,13 @@ async function generateStaticPages (conf) {
 
 async function processUrl (url, browser, conf) {
     const page = await browser.newPage();
-    await page.setViewport({width: conf.snapshotsWidth, height: conf.snapshotsHeight});
+    await page.setViewport({width: conf.snapshotWidth, height: conf.snapshotHeight});
     await page.goto(`${conf.startingDomain}${url}`, {waitUntil: 'networkidle0'});
     if ( !fs.existsSync( `${conf.dir.build}${url}` ) ) {
         mkdir( `${conf.dir.build}${url}` );
     }
     let html = await page.content();
-    html = html.replace('</body>',`${conf.extraHtml}</body>`);
+    html = html.replace('</body>',`${conf.htmlToReinject}</body>`);
     console.log(styleSubtitle, `    * ${conf.startingDomain}${url}`);
     const minHtml = html_minifier.minify(html,
         { minifyCSS: true
@@ -261,7 +261,7 @@ async function processUrl (url, browser, conf) {
     fs.writeFileSync(`${conf.dir.build}${url}/${conf.pagesName}`, minHtml);
     if (conf.snapshots) {
         await page.screenshot(
-            { path: `${conf.dir.build}${url}/${conf.snapshotsName}`
+            { path: `${conf.dir.build}${url}/${conf.snapshotFileName}`
             , quality: conf.snapshotsQuality
             }
         );

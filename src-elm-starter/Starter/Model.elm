@@ -1,4 +1,4 @@
-module Starter.Model exposing (..)
+module Starter.Model exposing (Model)
 
 import Starter.Flags
 

@@ -17,6 +17,7 @@ manifestIcon size =
         [ ( "src", Json.Encode.string (Starter.Icon.iconFileName size) )
         , ( "sizes", Json.Encode.string (sizeString ++ "x" ++ sizeString) )
         , ( "type", Json.Encode.string "image/png" )
+        , ( "purpose", Json.Encode.string "any maskable" )
         ]
 
 
@@ -33,7 +34,7 @@ manifest args =
     Json.Encode.object
         [ ( "name", Json.Encode.string args.title )
         , ( "short_name", Json.Encode.string args.title )
-        , ( "start_url", Json.Encode.string "/index.html" )
+        , ( "start_url", Json.Encode.string "/" )
         , ( "display", Json.Encode.string "standalone" )
         , ( "background_color", Json.Encode.string args.themeColor )
         , ( "theme_color", Json.Encode.string args.themeColor )
