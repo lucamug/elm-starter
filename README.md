@@ -11,9 +11,9 @@ Example of the installed version, with and without Javascript enabled:
 
 These are three simple examples of websites built with `elm-starter`:
 
-* https://elm-starter.guupa.com/ [Code](https://github.com/lucamug/elm-starter)
-* https://elm-todomvc.guupa.com/ [Code](https://github.com/lucamug/elm-todomvc)
-* https://elm-spa-example.guupa.com/ [Code](https://github.com/lucamug/elm-spa-example)
+* https://elm-starter.guupa.com/ ([Code](https://github.com/lucamug/elm-starter))
+* https://elm-todomvc.guupa.com/ ([Code](https://github.com/lucamug/elm-todomvc))
+* https://elm-spa-example.guupa.com/ ([Code](https://github.com/lucamug/elm-spa-example))
 
 ![elm-starter](assets/dev/collection.png)
 
