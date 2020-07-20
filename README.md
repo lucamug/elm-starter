@@ -1,6 +1,6 @@
 # elm-starter
 
-`elm-starter` is an experimental Elm-based Elm bootstrapper that can also be plugged into an already existing Elm applications. 
+`elm-starter` is an experimental Elm-based Elm bootstrapper that can also be plugged into already existing Elm applications. 
 
 Example of the installed version, with and without Javascript enabled:
 
@@ -158,17 +158,17 @@ When setting up the app with Netlify, input these in the deploy configuration:
 
 
 
-# (\*) Aapplications working without Javascript
+# (\*) Applications working without Javascript
 
 Working without Javascript depends on the application. The `elm-starter` example works completely fine also without Javascript, the only missing thing is the smooth transition between pages.
 
 The `elm-todomvc` example requires Javascript. Note that in this example, compared to Evan's original TodoMVC, I slightly changed the CSS to improve the a11y (mainly lack of contrast and fonts too small).
 
-The `elm-spa-example` partially works without Javascript. You can browser accross pages but the counters are not working.
+The `elm-spa-example` partially works without Javascript. You can browse across pages but the counters are not working.
 
-`elm-starter` annd `elm-todomvc` use `Browser.element`, while `elm-spa-example` use `Browser.application`.
+`elm-starter` and `elm-todomvc` use `Browser.element`, while `elm-spa-example` use `Browser.application`.
 
-The setup for these two cases is a bit different. `Browser.application` require to use `htmlToReinject` (see `Index.elm`) because Elm is wiping out all the content in the body. Also the node where Elm attach itself need to be removed (see `node.remove()` ).
+The setup for these two cases is a bit different. `Browser.application` requires to use `htmlToReinject` (see `Index.elm`) because Elm is wiping out all the content in the body. Also the node where Elm attach itself needs to be removed (see `node.remove()` ).
 
 The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These files are automatically generated and should not be edited directly, unless during some debugging process.
 
@@ -288,7 +288,7 @@ This is the object exposed by the compiler used to initialize the application.
 
 * Javascript and CSS to generate the initial `index.html` are actually strings :-(
 * `src-elm-starter/starter.js`, the core of `elm-starter`, is ~330 lines of Javascript. I wish it could be smaller
-* If your Elm code rely on data only available at runtime, such as window size or dark mode, prerendering is probably not the right approach. In this case you may consider [disabling pre-rendering](#disabling-pre-rendering) and use other alternatives, such as [Netlify prerendering](https://docs.netlify.com/site-deploys/post-processing/prerendering/#set-up-prerendering)
+* If your Elm code relies on data only available at runtime, such as window size or dark mode, prerendering is probably not the right approach. In this case you may consider [disabling pre-rendering](#disabling-pre-rendering) and use other alternatives, such as [Netlify prerendering](https://docs.netlify.com/site-deploys/post-processing/prerendering/#set-up-prerendering)
 
 Note
 
