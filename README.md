@@ -82,7 +82,10 @@ Done! At this point, these are the available commands:
 
 Runs the app in the development mode.
 Open [http://localhost:8000](http://localhost:8000) to view it in the browser.
+
 Edit `src/Main.elm` and save to reload the browser.
+
+Also edit `src/Index.elm` and `package.json` for further customization.
 
 ### `$ npm run build`
 
@@ -91,6 +94,7 @@ Builds the app for production to the `elm-stuff/elm-starter-files/build` folder.
 ### `$ npm run serverBuild`
 
 Launches a server in the `build` folder.
+
 Open [http://localhost:9000](http://localhost:9000) to view it in the browser.
 
 
@@ -114,7 +118,20 @@ Let's suppose your existing project is in `my-elm-app`
 * Copy the file [`elm-starter/src/Index.elm`](https://github.com/lucamug/elm-starter/blob/master/src/Index.elm) to `my-elm-app/src/Index.elm`
 * Copy the function `conf` from [`elm-starter/src/Main.elm`](https://github.com/lucamug/elm-starter/blob/master/src/Main.elm#L33) to `my-elm-app/src/Main.elm` (remember also to expose it)
 * If you don't have `package.json` in your project, add one with `$ npm init`
+* Be sure that you have these values in `package.json` as they will be used all over the places:
+
+    ```
+    "name": "app-name",
+    "nameLong": "app-name - This can contain spaces",
+    "description": "App description",
+    "author": "Your name",
+    "version": "1.0.0",
+    "homepage": "https://your-app.com",
+    "license": "BSD-3-Clause",
+    ```
+
 * Add `node` dependencies with these commands 
+    
     ```
     $ npm install --save-dev chokidar-cli
     $ npm install --save-dev concurrently
@@ -124,6 +141,7 @@ Let's suppose your existing project is in `my-elm-app`
     $ npm install --save-dev puppeteer
     $ npm install --save-dev terser
     ```
+    
 * Add `src-elm-starter` as an extra `source-directory` in `elm.json`, the same as in `elm-starter/elm.json`
 * Add these commands to `package.json` (or run them directly)
     ```

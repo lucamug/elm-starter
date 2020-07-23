@@ -13,7 +13,9 @@ module Starter.SnippetHtml exposing
 import Html.String exposing (..)
 import Html.String.Attributes exposing (..)
 import Html.String.Extra exposing (..)
+import Starter.ConfMain
 import Starter.ConfMeta
+import Starter.Flags
 import Starter.SnippetCss
 
 
@@ -55,36 +57,27 @@ pwa mainConf =
 -- previewCards : List (Html msg)
 
 
-previewCards :
-    { a
-        | description : String
-        , domain : String
-        , snapshotFileName : String
-        , title : String
-        , twitterHandle : String
-        , twitterSite : String
-    }
-    -> List (Html msg)
-previewCards mainConf =
+previewCards : Starter.Flags.Flags -> Starter.ConfMain.Conf -> List (Html msg)
+previewCards flags mainConf =
     --
     -- From https://medium.com/slack-developer-blog/everything-you-ever-wanted-to-know-about-unfurling-but-were-afraid-to-ask-or-how-to-make-your-e64b4bb9254
     --
     -- facebook open graph tags
     [ meta [ property_ "og:type", content "website" ] []
-    , meta [ property_ "og:url", content mainConf.domain ] []
-    , meta [ property_ "og:title", content mainConf.title ] []
-    , meta [ property_ "og:description", content mainConf.description ] []
+    , meta [ property_ "og:url", content flags.homepage ] []
+    , meta [ property_ "og:title", content flags.nameLong ] []
+    , meta [ property_ "og:description", content flags.description ] []
     , meta [ property_ "og:image", content ("/" ++ mainConf.snapshotFileName) ] []
 
     -- twitter card tags additive with the og: tags
     , meta [ name "twitter:card", content "summary_large_image" ] []
     , meta [ name "twitter:creator", content ("@" ++ mainConf.twitterHandle) ] []
     , meta [ name "twitter:site", content ("@" ++ mainConf.twitterSite) ] []
-    , meta [ name "twitter:domain", value mainConf.domain ] []
-    , meta [ name "twitter:title", value mainConf.title ] []
-    , meta [ name "twitter:description", value mainConf.description ] []
+    , meta [ name "twitter:domain", value flags.homepage ] []
+    , meta [ name "twitter:title", value flags.nameLong ] []
+    , meta [ name "twitter:description", value flags.description ] []
     , meta [ name "twitter:image", content ("/" ++ mainConf.snapshotFileName) ] []
-    , meta [ name "twitter:url", value mainConf.domain ] []
+    , meta [ name "twitter:url", value flags.homepage ] []
 
     -- , meta [ name "twitter:label1", value "Opens in Theaters" ] []
     -- , meta [ name "twitter:data1", value "December 1, 2015" ] []

@@ -13,6 +13,7 @@ import Html.String
 import Html.String.Extra
 import Json.Decode
 import Starter.ConfMain
+import Starter.Flags
 import Starter.SnippetJavascript
 import Svg
 import Svg.Attributes
@@ -22,13 +23,13 @@ import Url.Parser exposing ((</>))
 
 conf : Starter.ConfMain.Conf
 conf =
-    { title = "elm-starter - An Elm-based Elm bootstrapper"
-    , description = "This application has been bootstrapped with elm-starter. An Elm-based light way to setup a fully functional Elm application."
-    , domain = "https://elm-starter.guupa.com"
-    , urls = urls
+    { urls = urls
     , assetsToCache = []
     , twitterSite = "lucamug"
     , twitterHandle = "lucamug"
+    , snapshotFileName = "snapshot.jpg"
+    , snapshotWidth = 700
+    , snapshotHeight = 350
     , themeColor =
         "rgb("
             ++ String.fromInt internalConf.backgroundColor.red
@@ -37,10 +38,6 @@ conf =
             ++ ","
             ++ String.fromInt internalConf.backgroundColor.blue
             ++ ")"
-    , author = "Luca Mugnaini"
-    , snapshotFileName = "snapshot.jpg"
-    , snapshotWidth = 700
-    , snapshotHeight = 350
     }
 
 
@@ -81,10 +78,7 @@ type alias Model =
 
 
 type alias Flags =
-    { commit : String
-    , branch : String
-    , env : String
-    , version : String
+    { starter : Starter.Flags.Flags
     , width : Int
     , height : Int
     , languages : List String
@@ -103,7 +97,7 @@ init flags =
             locationHrefToRoute flags.locationHref
     in
     ( { route = route, flags = flags }
-    , updateHtmlMeta route
+    , updateHtmlMeta flags.starter route
     )
 
 
@@ -201,14 +195,14 @@ type Msg
 -- UPDATE
 
 
-updateHtmlMeta : Route -> Cmd msg
-updateHtmlMeta route =
+updateHtmlMeta : Starter.Flags.Flags -> Route -> Cmd msg
+updateHtmlMeta starterFlags route =
     let
         title =
-            "a " ++ String.toUpper (tangramToString (routeToTangram route)) ++ " from " ++ conf.title
+            "a " ++ String.toUpper (tangramToString (routeToTangram route)) ++ " from " ++ starterFlags.nameLong
 
         url =
-            conf.domain ++ routeToAbsolutePath route
+            starterFlags.homepage ++ routeToAbsolutePath route
 
         image =
             url ++ "/snapshot.jpg"
@@ -232,7 +226,7 @@ update msg model =
 
         UrlChanged route ->
             ( { model | route = route }
-            , updateHtmlMeta route
+            , updateHtmlMeta model.flags.starter route
             )
 
         KeyDown key ->

@@ -24,7 +24,8 @@ manifestIcon size =
 type alias Manifest =
     { iconSizes : List Int
     , themeColor : String
-    , title : String
+    , name : String
+    , nameLong : String
     }
 
 
@@ -32,8 +33,8 @@ manifest : Manifest -> Json.Encode.Value
 manifest args =
     -- https://developer.mozilla.org/en-US/docs/Web/Manifest
     Json.Encode.object
-        [ ( "name", Json.Encode.string args.title )
-        , ( "short_name", Json.Encode.string args.title )
+        [ ( "short_name", Json.Encode.string args.name )
+        , ( "name", Json.Encode.string args.nameLong )
         , ( "start_url", Json.Encode.string "/" )
         , ( "display", Json.Encode.string "standalone" )
         , ( "background_color", Json.Encode.string args.themeColor )

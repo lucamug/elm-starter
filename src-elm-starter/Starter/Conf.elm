@@ -157,7 +157,8 @@ encoder args =
                 [ ( args.fileNames.manifestJson
                   , { iconSizes = args.iconsForManifest
                     , themeColor = Main.conf.themeColor
-                    , title = Main.conf.title
+                    , name = args.flags.name
+                    , nameLong = args.flags.nameLong
                     }
                         |> Starter.Manifest.manifest
                         |> Json.Encode.encode Starter.ConfMeta.conf.indentation
@@ -190,7 +191,7 @@ encoder args =
                 , ( args.fileNames.robotsTxt
                   , [ "User-agent: *"
                     , "Disallow:"
-                    , "Sitemap: " ++ Main.conf.domain ++ args.fileNames.sitemap
+                    , "Sitemap: " ++ args.flags.homepage ++ args.fileNames.sitemap
                     ]
                         |> String.join "\n"
                   )
@@ -198,7 +199,7 @@ encoder args =
                 -- "/sitemap.txt"
                 --
                 , ( args.fileNames.sitemap
-                  , String.join "\n" <| List.map (\url -> Main.conf.domain ++ url) Main.conf.urls
+                  , String.join "\n" <| List.map (\url -> args.flags.homepage ++ url) Main.conf.urls
                   )
                 ]
           )

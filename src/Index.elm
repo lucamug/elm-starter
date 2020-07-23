@@ -18,10 +18,10 @@ index flags =
         [ lang "en" ]
         [ head []
             ([]
-                ++ [ title_ [] [ text Main.conf.title ]
+                ++ [ title_ [] [ text flags.nameLong ]
                    , meta [ charset "utf-8" ] []
-                   , meta [ name "author", content Main.conf.author ] []
-                   , meta [ name "description", content Main.conf.description ] []
+                   , meta [ name "author", content flags.author ] []
+                   , meta [ name "description", content flags.description ] []
                    , meta [ name "viewport", content "width=device-width, initial-scale=1, shrink-to-fit=no" ] []
                    , meta [ httpEquiv "x-ua-compatible", content "ie=edge" ] []
                    , link [ rel "icon", href (Starter.Icon.iconFileName 64) ] []
@@ -36,7 +36,7 @@ index flags =
                    ]
                 ++ Starter.SnippetHtml.messagesStyle
                 ++ Starter.SnippetHtml.pwa Main.conf
-                ++ Starter.SnippetHtml.previewCards Main.conf
+                ++ Starter.SnippetHtml.previewCards flags Main.conf
             )
         , body []
             ([]
@@ -62,16 +62,7 @@ index flags =
                 -- Signature "Made with ❤ and Elm"
                 ++ [ script [] [ textUnescaped Starter.SnippetJavascript.signature ] ]
                 -- Paasing metadata to Elm, initializing "window.ElmStarter"
-                ++ [ script []
-                        [ textUnescaped <|
-                            Starter.SnippetJavascript.metaInfo
-                                { gitBranch = flags.gitBranch
-                                , gitCommit = flags.gitCommit
-                                , env = flags.env
-                                , version = flags.version
-                                }
-                        ]
-                   ]
+                ++ [ script [] [ textUnescaped <| Starter.SnippetJavascript.metaInfo flags ] ]
                 -- Let's start Elm!
                 ++ [ Html.String.Extra.script []
                         [ Html.String.textUnescaped
@@ -80,10 +71,13 @@ index flags =
                             window.ElmApp = Elm.Main.init(
                                 { node: node
                                 , flags:
-                                    { commit: ElmStarter.commit
-                                    , branch: ElmStarter.branch
-                                    , env: ElmStarter.env
-                                    , version: ElmStarter.version
+                                    
+                                    // From package.jspn
+                                    { starter : """
+                                ++ Starter.SnippetJavascript.metaInfoData flags
+                                ++ """ 
+                                    
+                                    // Others
                                     , width: window.innerWidth
                                     , height: window.innerHeight
                                     , languages: window.navigator.userLanguages || window.navigator.languages || []

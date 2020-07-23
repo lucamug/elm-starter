@@ -31,15 +31,26 @@ view _ =
                 [ Html.text <|
                     Json.Encode.encode 4 <|
                         Starter.Conf.conf
-                            { dirPw = "dirPw"
-                            , dirBin = "dirBin"
-                            , dirIgnoredByGit = "dirIgnoredByGit"
-                            , dirTemp = "dirTemp"
-                            , fileElmWorker = "fileElmWorker"
-                            , gitCommit = "NOT-AVAILABLE"
-                            , gitBranch = "NOT-AVAILABLE"
-                            , env = "NOT-AVAILABLE"
-                            , version = "NOT-AVAILABLE"
+                            -- From package.jspn
+                            { name = "NOT-AVAILABLE [name]"
+                            , nameLong = "NOT-AVAILABLE [nameLong]"
+                            , description = "NOT-AVAILABLE [description]"
+                            , author = "NOT-AVAILABLE [author]"
+                            , version = "NOT-AVAILABLE [version]"
+                            , homepage = "NOT-AVAILABLE [homepage]"
+                            , license = "NOT-AVAILABLE [license]"
+
+                            -- From Git
+                            , commit = "NOT-AVAILABLE [commit]"
+                            , branch = "NOT-AVAILABLE [branch]"
+
+                            -- From starter.js
+                            , env = "NOT-AVAILABLE [env]"
+                            , dirPw = "NOT-AVAILABLE [dirPw]"
+                            , dirBin = "NOT-AVAILABLE [dirBin]"
+                            , dirIgnoredByGit = "NOT-AVAILABLE [dirIgnoredByGit]"
+                            , dirTemp = "NOT-AVAILABLE [dirTemp]"
+                            , fileElmWorker = "NOT-AVAILABLE [fileElmWorker]"
                             }
                 ]
             ]

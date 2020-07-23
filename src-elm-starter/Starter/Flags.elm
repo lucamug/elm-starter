@@ -7,6 +7,7 @@ module Starter.Flags exposing
     , dirEncoder
     , file
     , fileEncoder
+    , flagsEncoder
     )
 
 import Json.Encode
@@ -17,19 +18,62 @@ type Env
     | Prod
 
 
-type alias Flags =
-    { env : String
-    , version : String
-    , gitCommit : String
-    , gitBranch : String
 
-    --
+-- FLAGS
+
+
+type alias Flags =
+    -- From package.jspn
+    { name : String
+    , nameLong : String
+    , description : String
+    , author : String
+    , version : String
+    , homepage : String
+    , license : String
+
+    -- From Git
+    , commit : String
+    , branch : String
+
+    -- From starter.js
+    , env : String
     , dirPw : String
     , dirBin : String
     , dirIgnoredByGit : String
     , dirTemp : String
     , fileElmWorker : String
     }
+
+
+flagsEncoder : Flags -> Json.Encode.Value
+flagsEncoder flags =
+    Json.Encode.object
+        -- From package.json
+        [ ( "name", Json.Encode.string flags.name )
+        , ( "nameLong", Json.Encode.string flags.nameLong )
+        , ( "description", Json.Encode.string flags.description )
+        , ( "author", Json.Encode.string flags.author )
+        , ( "version", Json.Encode.string flags.version )
+        , ( "homepage", Json.Encode.string flags.homepage )
+        , ( "license", Json.Encode.string flags.license )
+
+        -- Git
+        , ( "commit", Json.Encode.string flags.commit )
+        , ( "branch", Json.Encode.string flags.branch )
+
+        -- From starter.js
+        , ( "env", Json.Encode.string flags.env )
+        , ( "dirPw", Json.Encode.string flags.dirPw )
+        , ( "dirBin", Json.Encode.string flags.dirBin )
+        , ( "dirIgnoredByGit", Json.Encode.string flags.dirIgnoredByGit )
+        , ( "dirTemp", Json.Encode.string flags.dirTemp )
+        , ( "fileElmWorker", Json.Encode.string flags.fileElmWorker )
+        ]
+
+
+
+-- DIR
 
 
 type alias Dir =
@@ -86,6 +130,10 @@ dirEncoder dir_ =
         , ( "devAssets", Json.Encode.string dir_.devAssets )
         , ( "build", Json.Encode.string dir_.build )
         ]
+
+
+
+-- FILE
 
 
 type alias File =

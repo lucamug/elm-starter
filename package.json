@@ -1,17 +1,17 @@
 {
   "name": "elm-starter",
-  "version": "0.0.9",
-  "description": "One of the simplest way to start a fully fledged Elm application",
+  "nameLong": "elm-starter - An Elm-based bootstrapper for Elm applications",
+  "description": "An Elm-based light way to setup a fully fledged Elm PWA.",
+  "author": "Luca Mugnaini",
+  "version": "0.0.2",
+  "homepage": "https://elm-starter.guupa.com",
+  "license": "BSD-3-Clause",
   "main": "index.js",
-  "directories": {
-  },
   "scripts": {
     "start": "node ./src-elm-starter/starter.js start",
     "build": "node ./src-elm-starter/starter.js build",
     "serverBuild": "node ./src-elm-starter/starter.js serverBuild"
   },
-  "author": "Luca Mugnaini",
-  "license": "BSD-3-Clause",
   "devDependencies": {
     "chokidar-cli": "^2.1.0",
     "concurrently": "^5.2.0",

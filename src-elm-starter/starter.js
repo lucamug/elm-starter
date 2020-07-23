@@ -19,8 +19,8 @@ const styleTitle = ` ${fgYellow}${totsu} %s${reset}\n`;
 const styleSubtitle = `    ${dim}${fgYellow}%s${reset}`;
 const styleDebug = `    ${fgMagenta}%s${reset}`;
 const arg = process.argv[2] ? process.argv[2] : "";
-const gitCommit = child_process.execSync('git rev-parse --short HEAD').toString().replace(/^\s+|\s+$/g, '');
-const gitBranch = child_process.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/^\s+|\s+$/g, '');
+const commit = child_process.execSync('git rev-parse --short HEAD').toString().replace(/^\s+|\s+$/g, '');
+const branch = child_process.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/^\s+|\s+$/g, '');
 const DEV = "dev";
 const PROD = "prod";
 
@@ -35,7 +35,7 @@ if (arg === "boot") {
     bootstrap(DEV);
 
 } else if (arg === "" || arg === "start") {
-    console.log(styleTitle, `Starting (${gitCommit}, ${gitBranch})...`);
+    console.log(styleTitle, `Starting (${commit}, ${branch})...`);
     bootstrap(DEV, command_start);
 
 } else if (arg === "generateDevFiles" ) {
@@ -102,16 +102,26 @@ function bootstrap (env, callback) {
         console.warn = consoleWarn;
         var app = Elm.Elm.Worker.init(
             { flags :
-                { env: env
+                    
+                // From package.jspn
+                { name : package.name
+                , nameLong : package.nameLong
+                , description : package.description
+                , author : package.author
                 , version : package.version
-                , gitCommit: gitCommit
-                , gitBranch: gitBranch
-                // Dirs
+                , homepage : package.homepage
+                , license : package.license
+
+                // From Git
+                , commit: commit
+                , branch: branch
+                
+                // From starter.js
+                , env: env
                 , dirPw : dir.pw
                 , dirBin : dir.bin
                 , dirIgnoredByGit : dir.ignoredByGit
                 , dirTemp : dir.temp
-                // Files
                 , fileElmWorker : file.elmWorker
                 }
             }
