@@ -32,17 +32,12 @@ These are three simple examples of websites built with `elm-starter`:
 # Characteristics
 
 * Generate a PWA (Progressive Web Application)
-* Most of the logic is written in Elm, including the code to generate all necessary files:
-    * `index.html` (generated from [`Index.elm`](https://github.com/lucamug/elm-start-private/blob/master/src/Index.elm) using [`zwilias/elm-html-string`](https://package.elm-lang.org/packages/zwilias/elm-html-string/latest/))
-    * [`sitemap.txt`](https://elm-starter.guupa.com/sitemap.txt)
-    * [`manifest.json`](https://elm-starter.guupa.com/manifest.json)
-    * [`service-worker.js`](https://elm-starter.guupa.com/service-worker.js)
-    * [`robots.txt`](https://elm-starter.guupa.com/robots.txt)
-* Pages are pre-rendered during the build together with their snapshots, using [`puppeteer`](https://github.com/puppeteer/puppeteer)
-* The app can work without Javascript(\*)
+* Mostly written in Elm
+* Pages are pre-rendered at build time
+* Works offline
+* Works without Javascript(\*)
 * SEO
 * Preview cards (Facebook, Twitter, etc.) work as expected
-* Works offline
 * Installable both on desktop and on mobile
 * High score with Lighthouse
 * Friendly notifications: "Loading...", "Must enable Javascript...", "Better enable Javascript..."
@@ -52,9 +47,11 @@ These are three simple examples of websites built with `elm-starter`:
 
 Lighthouse report:
 
-![elm-starter](assets/dev/lighthouse.png)
+![Lighthouse report](assets/dev/lighthouse.png)
 
+Slack's previews:
 
+![Slack's previews](assets/dev/slack-previews.jpg)
 
 
 
@@ -67,7 +64,9 @@ Lighthouse report:
 
 `elm-starter` is not published in npm yet and it doesn't have a specific command to bootstrap a project, so the way it works now is cloning this repo.
 
-The steps are:
+The fastest way is to [click here](https://app.netlify.com/start/deploy?repository=https://github.com/lucamug/elm-starter). This will automatically clone the repo and publish in Netlify.
+
+Otherwise the steps are:
 
 ```
 $ git clone https://github.com/lucamug/elm-starter
@@ -96,6 +95,10 @@ Builds the app for production to the `elm-stuff/elm-starter-files/build` folder.
 Launches a server in the `build` folder.
 
 Open [http://localhost:9000](http://localhost:9000) to view it in the browser.
+
+
+
+
 
 
 
@@ -161,6 +164,42 @@ Done!
 
 
 
+
+
+# Where is my stuff?
+
+
+## Title
+
+* In `package.json`, `nameLong` value
+* Used for
+  * `manifest.json`, `name` value
+  * `index.html`, `<title>` element
+  * `index.html`, `og:title` meta-element
+  * `index.html`, `twitter:title` meta-element
+  * Passed to `Main.elm` as flag `nameLong`, in case you need it in your app.
+
+
+## Short Title
+
+* In `package.json`, `name` value (cannot contain spaces)
+* Used for `manifest.json`, `short_name` value
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Netlify
 
 When setting up the app with Netlify, input these in the deploy configuration:
@@ -199,6 +238,16 @@ The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These file
 
 
 # Advanced stuff
+
+## File generation
+
+* Most of the logic is written in Elm, including the code to generate all necessary files:
+    * `index.html` (generated from [`Index.elm`](https://github.com/lucamug/elm-start-private/blob/master/src/Index.elm) using [`zwilias/elm-html-string`](https://package.elm-lang.org/packages/zwilias/elm-html-string/latest/))
+    * [`sitemap.txt`](https://elm-starter.guupa.com/sitemap.txt)
+    * [`manifest.json`](https://elm-starter.guupa.com/manifest.json)
+    * [`service-worker.js`](https://elm-starter.guupa.com/service-worker.js)
+    * [`robots.txt`](https://elm-starter.guupa.com/robots.txt)
+
 
 ## Disabling pre-rendering
 
@@ -358,4 +407,6 @@ These are other projects that can be used to bootstrap an Elm application or to 
 * [create-elm-app](https://github.com/halfzebra/create-elm-app)
 * [spades](https://github.com/rogeriochaves/spades)
 
+Here are similar projects for other Languages/Frameworks:
 
+* [staticgen.com](https://www.staticgen.com/)

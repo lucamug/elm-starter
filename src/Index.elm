@@ -18,12 +18,13 @@ index flags =
         [ lang "en" ]
         [ head []
             ([]
-                ++ [ title_ [] [ text flags.nameLong ]
-                   , meta [ charset "utf-8" ] []
+                ++ [ meta [ charset "utf-8" ] []
+                   , title_ [] [ text flags.nameLong ]
                    , meta [ name "author", content flags.author ] []
                    , meta [ name "description", content flags.description ] []
                    , meta [ name "viewport", content "width=device-width, initial-scale=1, shrink-to-fit=no" ] []
                    , meta [ httpEquiv "x-ua-compatible", content "ie=edge" ] []
+                   , link [ rel "canonical", href flags.homepage ] []
                    , link [ rel "icon", href (Starter.Icon.iconFileName 64) ] []
                    , link [ rel "apple-touch-icon", href (Starter.Icon.iconFileName 152) ] []
                    , style_ []
@@ -62,7 +63,7 @@ index flags =
                 -- Signature "Made with ❤ and Elm"
                 ++ [ script [] [ textUnescaped Starter.SnippetJavascript.signature ] ]
                 -- Paasing metadata to Elm, initializing "window.ElmStarter"
-                ++ [ script [] [ textUnescaped <| Starter.SnippetJavascript.metaInfo flags ] ]
+                -- ++ [ script [] [ textUnescaped <| Starter.SnippetJavascript.metaInfo flags ] ]
                 -- Let's start Elm!
                 ++ [ Html.String.Extra.script []
                         [ Html.String.textUnescaped

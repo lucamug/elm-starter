@@ -209,7 +209,7 @@ updateHtmlMeta starterFlags route =
     in
     Cmd.batch
         [ changeMeta { type_ = "property", querySelector = "title", fieldName = "innerHTML", content = title }
-        , changeMeta { type_ = "attribute", querySelector = "meta[property='og:title']", fieldName = "content", content = title }
+        , changeMeta { type_ = "attribute", querySelector = "link[rel='canonical']", fieldName = "href", content = url }
         , changeMeta { type_ = "attribute", querySelector = "meta[name='twitter:title']", fieldName = "value", content = title }
         , changeMeta { type_ = "attribute", querySelector = "meta[property='og:image']", fieldName = "content", content = image }
         , changeMeta { type_ = "attribute", querySelector = "meta[name='twitter:image']", fieldName = "content", content = image }

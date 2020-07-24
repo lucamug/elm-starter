@@ -131,12 +131,14 @@ portChangeMeta =
     """
 if (ElmApp && ElmApp.ports && ElmApp.ports.changeMeta) {
     ElmApp.ports.changeMeta.subscribe(function(args) {
-        var element = document.querySelector(args.querySelector);
-        if (element) {
-            if (args.type_ == "attribute") {
-                element.setAttribute(args.fieldName, args.content);
-            } else if (args.type_ == "property" && element[args.fieldName]) {
-                element[args.fieldName] = args.content;
+        if (args.querySelector !== "") {
+            var element = document.querySelector(args.querySelector);
+            if (element) {
+                if (args.type_ == "attribute") {
+                    element.setAttribute(args.fieldName, args.content);
+                } else if (args.type_ == "property" && element[args.fieldName]) {
+                    element[args.fieldName] = args.content;
+                }
             }
         }
     });
