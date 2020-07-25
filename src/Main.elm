@@ -25,19 +25,6 @@ conf : Starter.ConfMain.Conf
 conf =
     { urls = urls
     , assetsToCache = []
-    , twitterSite = "lucamug"
-    , twitterHandle = "lucamug"
-    , snapshotFileName = "snapshot.jpg"
-    , snapshotWidth = 700
-    , snapshotHeight = 350
-    , themeColor =
-        "rgb("
-            ++ String.fromInt internalConf.backgroundColor.red
-            ++ ","
-            ++ String.fromInt internalConf.backgroundColor.green
-            ++ ","
-            ++ String.fromInt internalConf.backgroundColor.blue
-            ++ ")"
     }
 
 

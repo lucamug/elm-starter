@@ -8,6 +8,7 @@ module Starter.Flags exposing
     , file
     , fileEncoder
     , flagsEncoder
+    , flagsToThemeColor
     )
 
 import Json.Encode
@@ -16,6 +17,10 @@ import Json.Encode
 type Env
     = Dev
     | Prod
+
+
+type alias Color =
+    { red : String, green : String, blue : String }
 
 
 
@@ -31,6 +36,11 @@ type alias Flags =
     , version : String
     , homepage : String
     , license : String
+    , twitterSite : Maybe String
+    , twitterAuthor : Maybe String
+    , snapshotWidth : Maybe String
+    , snapshotHeight : Maybe String
+    , themeColor : Maybe Color
 
     -- From Git
     , commit : String
@@ -46,6 +56,20 @@ type alias Flags =
     }
 
 
+maybe : (a -> Json.Encode.Value) -> Maybe a -> Json.Encode.Value
+maybe encoder =
+    Maybe.map encoder >> Maybe.withDefault Json.Encode.null
+
+
+colorEncoder : Color -> Json.Encode.Value
+colorEncoder color =
+    Json.Encode.object
+        [ ( "red", Json.Encode.string color.red )
+        , ( "green", Json.Encode.string color.green )
+        , ( "blue", Json.Encode.string color.blue )
+        ]
+
+
 flagsEncoder : Flags -> Json.Encode.Value
 flagsEncoder flags =
     Json.Encode.object
@@ -57,6 +81,11 @@ flagsEncoder flags =
         , ( "version", Json.Encode.string flags.version )
         , ( "homepage", Json.Encode.string flags.homepage )
         , ( "license", Json.Encode.string flags.license )
+        , ( "twitterSite", maybe Json.Encode.string flags.twitterSite )
+        , ( "twitterAuthor", maybe Json.Encode.string flags.twitterAuthor )
+        , ( "snapshotWidth", maybe Json.Encode.string flags.snapshotWidth )
+        , ( "snapshotHeight", maybe Json.Encode.string flags.snapshotHeight )
+        , ( "themeColor", maybe colorEncoder flags.themeColor )
 
         -- Git
         , ( "commit", Json.Encode.string flags.commit )
@@ -70,6 +99,28 @@ flagsEncoder flags =
         , ( "dirTemp", Json.Encode.string flags.dirTemp )
         , ( "fileElmWorker", Json.Encode.string flags.fileElmWorker )
         ]
+
+
+flagsToThemeColorRgb : Flags -> { blue : Int, green : Int, red : Int }
+flagsToThemeColorRgb flags =
+    case flags.themeColor of
+        Just color ->
+            { red = Maybe.withDefault 255 <| String.toInt color.red
+            , green = Maybe.withDefault 255 <| String.toInt color.green
+            , blue = Maybe.withDefault 255 <| String.toInt color.blue
+            }
+
+        Nothing ->
+            { red = 255, green = 255, blue = 255 }
+
+
+flagsToThemeColor : Flags -> String
+flagsToThemeColor flags =
+    let
+        color =
+            flagsToThemeColorRgb flags
+    in
+    "rgb(" ++ String.join "," (List.map String.fromInt [ color.red, color.green, color.blue ]) ++ ")"
 
 
 

@@ -136,12 +136,12 @@ encoder args =
                 ("http://localhost:" ++ String.fromInt args.portStatic)
           )
         , ( "batchesSize", Json.Encode.int 4 )
-        , ( "snapshots", Json.Encode.bool True )
         , ( "pagesName", Json.Encode.string "index.html" )
-        , ( "snapshotFileName", Json.Encode.string Main.conf.snapshotFileName )
-        , ( "snapshotWidth", Json.Encode.int Main.conf.snapshotWidth )
-        , ( "snapshotHeight", Json.Encode.int Main.conf.snapshotHeight )
+        , ( "snapshots", Json.Encode.bool True )
         , ( "snapshotsQuality", Json.Encode.int 80 )
+        , ( "snapshotWidth", Json.Encode.int <| Maybe.withDefault 700 <| String.toInt <| Maybe.withDefault "" <| args.flags.snapshotWidth )
+        , ( "snapshotHeight", Json.Encode.int <| Maybe.withDefault 350 <| String.toInt <| Maybe.withDefault "" <| args.flags.snapshotHeight )
+        , ( "snapshotFileName", Json.Encode.string Starter.ConfMeta.conf.fileNames.snapshot )
         , ( "mainConf", Starter.ConfMain.encoder Main.conf )
         , ( "htmlToReinject"
           , args.htmlToReinject
@@ -156,7 +156,7 @@ encoder args =
                 --
                 [ ( args.fileNames.manifestJson
                   , { iconSizes = args.iconsForManifest
-                    , themeColor = Main.conf.themeColor
+                    , themeColor = Starter.Flags.flagsToThemeColor args.flags
                     , name = args.flags.name
                     , nameLong = args.flags.nameLong
                     }

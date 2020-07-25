@@ -30,13 +30,13 @@ index flags =
                    , style_ []
                         [ text <| """
                             body 
-                                { background-color: """ ++ Main.conf.themeColor ++ """
+                                { background-color: """ ++ Starter.Flags.flagsToThemeColor flags ++ """
                                 ; font-family: 'IBM Plex Sans', helvetica, sans-serif
                                 ; margin: 0px;
                                 }""" ]
                    ]
                 ++ Starter.SnippetHtml.messagesStyle
-                ++ Starter.SnippetHtml.pwa Main.conf
+                ++ Starter.SnippetHtml.pwa (Starter.Flags.flagsToThemeColor flags)
                 ++ Starter.SnippetHtml.previewCards flags Main.conf
             )
         , body []

@@ -15,6 +15,7 @@ type alias FileNames =
     , robotsTxt : String
     , serviceWorker : String
     , sitemap : String
+    , snapshot : String
     }
 
 
@@ -27,6 +28,7 @@ fileNames =
     , indexHtml = "/index.html"
     , serviceWorker = "/service-worker.js"
     , sitemap = "/sitemap.txt"
+    , snapshot = "/snapshot.jpg"
     }
 
 

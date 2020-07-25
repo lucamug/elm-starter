@@ -39,6 +39,10 @@ view _ =
                             , version = "NOT-AVAILABLE [version]"
                             , homepage = "NOT-AVAILABLE [homepage]"
                             , license = "NOT-AVAILABLE [license]"
+                            , twitterSite = Just "NOT-AVAILABLE [twitterSite]"
+                            , twitterAuthor = Just "NOT-AVAILABLE [twitterAuthor]"
+                            , snapshotWidth = Nothing
+                            , snapshotHeight = Nothing
 
                             -- From Git
                             , commit = "NOT-AVAILABLE [commit]"

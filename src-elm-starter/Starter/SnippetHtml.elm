@@ -27,15 +27,15 @@ import Starter.SnippetCss
 -- pwa : List (Html msg)
 
 
-pwa : { a | themeColor : String } -> List (Html msg)
-pwa mainConf =
+pwa : String -> List (Html msg)
+pwa themeColor =
     -- DNS preconnect and prefetch for
     -- https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js
     [ link [ rel "preconnect", href "https://storage.googleapis.com", crossorigin "true" ] []
     , link [ rel "dns-prefetch", href "https://storage.googleapis.com" ] []
 
     -- PWA
-    , meta [ name "theme-color", content mainConf.themeColor ] []
+    , meta [ name "theme-color", content themeColor ] []
     , meta [ name "mobile-web-app-capable", content "yes" ] []
     , link [ rel "manifest", href Starter.ConfMeta.conf.fileNames.manifestJson ] []
 
@@ -63,27 +63,41 @@ previewCards flags mainConf =
     -- From https://medium.com/slack-developer-blog/everything-you-ever-wanted-to-know-about-unfurling-but-were-afraid-to-ask-or-how-to-make-your-e64b4bb9254
     --
     -- facebook open graph tags
-    [ meta [ property_ "og:type", content "website" ] []
-    , meta [ property_ "og:url", content flags.homepage ] []
-    , meta [ property_ "og:title", content flags.nameLong ] []
-    , meta [ property_ "og:description", content flags.description ] []
-    , meta [ property_ "og:image", content ("/" ++ mainConf.snapshotFileName) ] []
+    []
+        ++ [ meta [ property_ "og:type", content "website" ] []
+           , meta [ property_ "og:url", content flags.homepage ] []
+           , meta [ property_ "og:title", content flags.nameLong ] []
+           , meta [ property_ "og:description", content flags.description ] []
+           , meta [ property_ "og:image", content Starter.ConfMeta.conf.fileNames.snapshot ] []
 
-    -- twitter card tags additive with the og: tags
-    , meta [ name "twitter:card", content "summary_large_image" ] []
-    , meta [ name "twitter:creator", content ("@" ++ mainConf.twitterHandle) ] []
-    , meta [ name "twitter:site", content ("@" ++ mainConf.twitterSite) ] []
-    , meta [ name "twitter:domain", value flags.homepage ] []
-    , meta [ name "twitter:title", value flags.nameLong ] []
-    , meta [ name "twitter:description", value flags.description ] []
-    , meta [ name "twitter:image", content ("/" ++ mainConf.snapshotFileName) ] []
-    , meta [ name "twitter:url", value flags.homepage ] []
+           -- twitter card tags additive with the og: tags
+           , meta [ name "twitter:card", content "summary_large_image" ] []
+           ]
+        ++ (case flags.twitterSite of
+                Just twitterSite ->
+                    [ meta [ name "twitter:site", content ("@" ++ twitterSite) ] [] ]
 
-    -- , meta [ name "twitter:label1", value "Opens in Theaters" ] []
-    -- , meta [ name "twitter:data1", value "December 1, 2015" ] []
-    -- , meta [ name "twitter:label2", value "Or on demand" ] []
-    -- , meta [ name "twitter:data2", value "at Hulu.com" ] []
-    ]
+                Nothing ->
+                    []
+           )
+        ++ (case flags.twitterAuthor of
+                Just twitterAuthor ->
+                    [ meta [ name "twitter:site", content ("@" ++ twitterAuthor) ] [] ]
+
+                Nothing ->
+                    []
+           )
+        ++ [ meta [ name "twitter:domain", value flags.homepage ] []
+           , meta [ name "twitter:title", value flags.nameLong ] []
+           , meta [ name "twitter:description", value flags.description ] []
+           , meta [ name "twitter:image", content Starter.ConfMeta.conf.fileNames.snapshot ] []
+           , meta [ name "twitter:url", value flags.homepage ] []
+
+           -- , meta [ name "twitter:label1", value "Opens in Theaters" ] []
+           -- , meta [ name "twitter:data1", value "December 1, 2015" ] []
+           -- , meta [ name "twitter:label2", value "Or on demand" ] []
+           -- , meta [ name "twitter:data2", value "at Hulu.com" ] []
+           ]
 
 
 prettyConsoleFormatting : String -> List (Html msg)

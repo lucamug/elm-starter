@@ -43,13 +43,14 @@ These are three simple examples of websites built with `elm-starter`:
 * Friendly notifications: "Loading...", "Must enable Javascript...", "Better enable Javascript..."
 * Potentially compatible with all Elm libraries (elm-ui, elm-spa, etc.)
 * Hopefully relatively simple to use and maintain
+* Non invasive (you can easily add/remove it)
 * Works with Netlify, Surge, etc.
 
 Lighthouse report:
 
 ![Lighthouse report](assets/dev/lighthouse.png)
 
-Slack's previews:
+Slack's previews (note how different urls have different snapshot and meta-data):
 
 ![Slack's previews](assets/dev/slack-previews.jpg)
 
@@ -65,6 +66,8 @@ Slack's previews:
 `elm-starter` is not published in npm yet and it doesn't have a specific command to bootstrap a project, so the way it works now is cloning this repo.
 
 The fastest way is to [click here](https://app.netlify.com/start/deploy?repository=https://github.com/lucamug/elm-starter). This will automatically clone the repo and publish in Netlify.
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/lucamug/elm-starter)
 
 Otherwise the steps are:
 
@@ -123,15 +126,18 @@ Let's suppose your existing project is in `my-elm-app`
 * If you don't have `package.json` in your project, add one with `$ npm init`
 * Be sure that you have these values in `package.json` as they will be used all over the places:
 
-    ```
-    "name": "app-name",
-    "nameLong": "app-name - This can contain spaces",
-    "description": "App description",
-    "author": "Your name",
-    "version": "1.0.0",
-    "homepage": "https://your-app.com",
-    "license": "BSD-3-Clause",
-    ```
+  * "name" - An npm-compatible name (cannot contain spaces)
+  * "nameLong" - The regular name used all over the places, like in the `<title>` of the page, for example
+  * "description"
+  * "author"
+  * "twitterSite" - A reference to a Twitter handle (Just the id without "@")
+  * "twitterCreator" - Another Twitter handle, refer to [Twitter cards markups](https://developer.twitter.com/en/docs/  tweets/optimize-with-cards/overview/markup)
+  * "version"
+  * "homepage"
+  * "license"
+  * "snapshotWidth" - default: 700 px
+  * "snapshotHeight" - default: 350 px
+  * "themeColor" - default: { "red": 15, "green": 85, "blue": 123 }
 
 * Add `node` dependencies with these commands 
     
@@ -155,36 +161,6 @@ Let's suppose your existing project is in `my-elm-app`
       },
     ```
 Done!
-
-
-
-
-
-
-
-
-
-
-
-# Where is my stuff?
-
-
-## Title
-
-* In `package.json`, `nameLong` value
-* Used for
-  * `manifest.json`, `name` value
-  * `index.html`, `<title>` element
-  * `index.html`, `og:title` meta-element
-  * `index.html`, `twitter:title` meta-element
-  * Passed to `Main.elm` as flag `nameLong`, in case you need it in your app.
-
-
-## Short Title
-
-* In `package.json`, `name` value (cannot contain spaces)
-* Used for `manifest.json`, `short_name` value
-  
 
 
 
@@ -373,7 +349,8 @@ Note
 Things that `elm-starter` is not expected to do 
 
 * Doesn't generate Elm code automatically, like Route-parser, for example
-* Doesn't do SSR (Server Side Render) but just pre-render during the build
+* Doesn't touch/wrap the code of your Elm Application
+* Doesn't do live SSR (Server Side Render) but just pre-render during the build
 * Doesn't change the Javascript coming out from the Elm compiler
 * Doesn't create a web site based on static files containing Markdown
 * There is no "[hydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web)", unless Elm does some magic that I am not aware of. 

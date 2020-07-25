@@ -12,17 +12,39 @@ const fgGreen = "\x1b[32m";
 const fgYellow = "\x1b[33m";
 const fgBlue = "\x1b[34m"
 const fgMagenta = "\x1b[35m";
+const fgRed = "\x1b[31m";
 const dim = "\x1b[2m";
 const reset = "\x1b[0m";
 const totsu = "凸";
 const styleTitle = ` ${fgYellow}${totsu} %s${reset}\n`;
 const styleSubtitle = `    ${dim}${fgYellow}%s${reset}`;
 const styleDebug = `    ${fgMagenta}%s${reset}`;
+const styleWarning = `    ${fgRed}Warning:${reset} %s`;
 const arg = process.argv[2] ? process.argv[2] : "";
 const commit = child_process.execSync('git rev-parse --short HEAD').toString().replace(/^\s+|\s+$/g, '');
 const branch = child_process.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/^\s+|\s+$/g, '');
 const DEV = "dev";
 const PROD = "prod";
+const NOT_AVAILABLE = "N/A";
+
+
+[ "name"
+, "nameLong"
+, "description"
+, "author"
+, "version"
+, "homepage"
+, "license"
+].map(checkRequired)
+
+
+function checkRequired(key) {
+    if (! package[key] || String(package[key]) === "") {
+        package[key] = NOT_AVAILABLE;
+        console.log(styleWarning, `"${key}" is required in package.json`);
+    }
+}
+
 
 //
 //
@@ -104,13 +126,22 @@ function bootstrap (env, callback) {
             { flags :
                     
                 // From package.jspn
-                { name : package.name
-                , nameLong : package.nameLong
-                , description : package.description
-                , author : package.author
-                , version : package.version
-                , homepage : package.homepage
-                , license : package.license
+                { name : String(package.name)
+                , nameLong : String(package.nameLong)
+                , description : String(package.description)
+                , author : String(package.author)
+                , version : String(package.version)
+                , homepage : String(package.homepage)
+                , license : String(package.license)
+                , twitterSite : typeof package.twitterSite === "undefined"? null : String(package.twitterSite)
+                , twitterAuthor : typeof package.twitterAuthor === "undefined"? null : String(package.twitterAuthor)
+                , snapshotWidth: typeof package.snapshotWidth === "undefined"? null : String(package.snapshotWidth)
+                , snapshotHeight: typeof package.snapshotHeight === "undefined"? null : String(package.snapshotHeight)
+                , themeColor: typeof package.snapshotHeight === "undefined"? null : 
+                    { red: String(package.themeColor.red)
+                    , green: String(package.themeColor.green)
+                    , blue: String(package.themeColor.blue)
+                    }
 
                 // From Git
                 , commit: commit
