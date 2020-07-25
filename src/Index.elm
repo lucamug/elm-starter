@@ -63,7 +63,7 @@ index flags =
                 -- Signature "Made with ❤ and Elm"
                 ++ [ script [] [ textUnescaped Starter.SnippetJavascript.signature ] ]
                 -- Paasing metadata to Elm, initializing "window.ElmStarter"
-                -- ++ [ script [] [ textUnescaped <| Starter.SnippetJavascript.metaInfo flags ] ]
+                ++ [ script [] [ textUnescaped <| Starter.SnippetJavascript.metaInfo flags ] ]
                 -- Let's start Elm!
                 ++ [ Html.String.Extra.script []
                         [ Html.String.textUnescaped
