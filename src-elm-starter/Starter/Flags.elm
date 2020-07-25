@@ -9,6 +9,7 @@ module Starter.Flags exposing
     , fileEncoder
     , flagsEncoder
     , flagsToThemeColor
+    , flagsToThemeColorRgb
     )
 
 import Json.Encode

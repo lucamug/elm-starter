@@ -3,9 +3,7 @@ module Starter.ConfMain exposing
     , encoder
     )
 
-import Html.String
 import Json.Encode
-import Starter.ConfMeta
 
 
 type alias Conf =

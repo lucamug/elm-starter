@@ -2,7 +2,6 @@ module Starter.Cache exposing (stuffToCache)
 
 import Main
 import Starter.ConfMeta
-import Starter.Flags
 import Starter.Icon
 
 

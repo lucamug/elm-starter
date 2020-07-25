@@ -4,10 +4,8 @@ import Html.String exposing (..)
 import Html.String.Attributes exposing (..)
 import Html.String.Extra exposing (..)
 import Main
-import Starter.ConfMeta
 import Starter.Flags
 import Starter.Icon
-import Starter.SnippetCss
 import Starter.SnippetHtml
 import Starter.SnippetJavascript
 
@@ -62,7 +60,7 @@ index flags =
                 ++ Starter.SnippetHtml.prettyConsoleFormatting flags.env
                 -- Signature "Made with ❤ and Elm"
                 ++ [ script [] [ textUnescaped Starter.SnippetJavascript.signature ] ]
-                -- Paasing metadata to Elm, initializing "window.ElmStarter"
+                -- Initializing "window.ElmStarter"
                 ++ [ script [] [ textUnescaped <| Starter.SnippetJavascript.metaInfo flags ] ]
                 -- Let's start Elm!
                 ++ [ Html.String.Extra.script []
@@ -72,13 +70,9 @@ index flags =
                             window.ElmApp = Elm.Main.init(
                                 { node: node
                                 , flags:
-                                    
-                                    // From package.jspn
                                     { starter : """
                                 ++ Starter.SnippetJavascript.metaInfoData flags
                                 ++ """ 
-                                    
-                                    // Others
                                     , width: window.innerWidth
                                     , height: window.innerHeight
                                     , languages: window.navigator.userLanguages || window.navigator.languages || []

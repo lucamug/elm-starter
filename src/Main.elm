@@ -2,19 +2,15 @@ port module Main exposing (conf, main)
 
 import Browser
 import Browser.Events
-import Dict
 import Element exposing (..)
 import Element.Background as Background
 import Element.Font as Font
 import Html
 import Html.Attributes
 import Html.Events
-import Html.String
-import Html.String.Extra
 import Json.Decode
 import Starter.ConfMain
 import Starter.Flags
-import Starter.SnippetJavascript
 import Svg
 import Svg.Attributes
 import Url
@@ -42,14 +38,9 @@ main =
         }
 
 
-internalConf :
-    { backgroundColor : { blue : number, green : number1, red : number2 }
-    , urlLabel : String
-    }
+internalConf : { urlLabel : String }
 internalConf =
-    { urlLabel = "tangram"
-    , backgroundColor = { red = 15, green = 85, blue = 123 }
-    }
+    { urlLabel = "tangram" }
 
 
 
@@ -301,6 +292,10 @@ linkAttrs =
 
 view : Model -> Html.Html Msg
 view model =
+    let
+        themeColor =
+            Starter.Flags.flagsToThemeColorRgb model.flags.starter
+    in
     Html.div
         [ Html.Attributes.id "elm" ]
         [ Html.node "style" [] [ Html.text css ]
@@ -309,9 +304,9 @@ view model =
         , layout
             [ Background.color <|
                 rgb255
-                    internalConf.backgroundColor.red
-                    internalConf.backgroundColor.green
-                    internalConf.backgroundColor.blue
+                    themeColor.red
+                    themeColor.green
+                    themeColor.blue
             , Font.color <| rgb 0.95 0.95 0.95
             , Font.family []
             , Font.size 20
@@ -492,10 +487,10 @@ tangramToData tangram =
             { p1 = ( -160, 120, 0 )
             , p2 = ( 150, -90, -180 )
             , p3 = ( -270, -93, -45 )
-            , p4 = ( -5, -305, 0 ) -- square ( 0, -300, 0 )
+            , p4 = ( -5, -305, 0 )
             , p5 = ( 231, 91, 0 )
             , p6 = ( 150, 224, 0 )
-            , p7 = ( -106, -150, -90 ) -- small triangle
+            , p7 = ( -106, -150, -90 )
             }
 
         Camel ->
@@ -747,14 +742,3 @@ css =
 }
 
 """
-
-
-
--- @keyframes elmLogoSpin {
---   from {
---     transform: rotate(0deg);
---   }
---   to {
---     transform: rotate(360deg);
---   }
--- }"""

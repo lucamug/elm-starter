@@ -8,7 +8,6 @@ import Html.String.Extra
 import Index
 import Json.Encode
 import Main
-import Starter.Cache
 import Starter.ConfMain
 import Starter.ConfMeta
 import Starter.ElmLive
@@ -16,7 +15,6 @@ import Starter.Flags
 import Starter.Icon
 import Starter.Manifest
 import Starter.ServiceWorker
-import Starter.SnippetHtml
 
 
 file : ( String, String ) -> Json.Encode.Value
