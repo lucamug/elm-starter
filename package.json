@@ -1,10 +1,10 @@
-{ "name": "elm-starter"
+{ "version": "0.0.5"
+, "name": "elm-starter"
 , "nameLong": "elm-starter - An Elm-based bootstrapper for Elm applications"
 , "description": "An Elm-based light way to setup a fully fledged Elm PWA."
 , "author": "Luca Mugnaini"
 , "twitterSite": "lucamug"
 , "twitterCreator": "lucamug"
-, "version": "0.0.4"
 , "homepage": "https://elm-starter.guupa.com"
 , "license": "BSD-3-Clause"
 , "snapshotWidth": 700

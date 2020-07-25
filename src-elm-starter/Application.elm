@@ -41,8 +41,9 @@ view _ =
                             , license = "NOT-AVAILABLE [license]"
                             , twitterSite = Just "NOT-AVAILABLE [twitterSite]"
                             , twitterAuthor = Just "NOT-AVAILABLE [twitterAuthor]"
-                            , snapshotWidth = Nothing
-                            , snapshotHeight = Nothing
+                            , snapshotWidth = Just "NOT-AVAILABLE [snapshotWidth]"
+                            , snapshotHeight = Just "NOT-AVAILABLE [snapshotHeight]"
+                            , themeColor = Nothing
 
                             -- From Git
                             , commit = "NOT-AVAILABLE [commit]"
