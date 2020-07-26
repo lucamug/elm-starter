@@ -2,6 +2,8 @@
 
 `elm-starter` is an experimental Elm-based Elm bootstrapper that can also be plugged into already existing Elm applications. 
 
+Post ["elm-starter", a tool for the Modern Web](https://dev.to/lucamug/elm-starter-a-tool-for-the-modern-web-53b1).
+
 Example of the installed version, with and without Javascript enabled:
 
 ![elm-starter](assets/dev/elm-starter.gif)
