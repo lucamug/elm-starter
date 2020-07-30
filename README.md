@@ -53,7 +53,7 @@ The fastest way is to [click here](https://app.netlify.com/start/deploy?reposito
 
 Otherwise the steps are:
 
-```
+```sh
 $ git clone https://github.com/lucamug/elm-starter
 $ mv elm-starter my-new-project
 $ cd my-new-project
@@ -108,7 +108,7 @@ Let's suppose your existing project is in `my-elm-app`
 
 * Add `node` dependencies with these commands
 
-    ```
+    ```sh
     $ npm install --save-dev chokidar-cli
     $ npm install --save-dev concurrently
     $ npm install --save-dev elm
@@ -120,7 +120,7 @@ Let's suppose your existing project is in `my-elm-app`
 
 * Add `src-elm-starter` as an extra `source-directory` in `elm.json`, the same as in `elm-starter/elm.json`
 * Add these commands to `package.json` (or run them directly)
-    ```
+    ```json
       "scripts": {
         "start":       "node ./src-elm-starter/starter.js start",
         "build":       "node ./src-elm-starter/starter.js build",
@@ -191,7 +191,7 @@ Support [https://github.com/kraklin/elm-debug-transformer](https://github.com/kr
 
 For better SEO, you should update meta-tags using the predefined port `changeMeta` that you can use this way:
 
-```
+```json
 Cmd.batch
     [ changeMeta { querySelector = "title", fieldName = "innerHTML", content = title }
     , changeMeta { querySelector = "meta[property='og:title']", fieldName = "content", content = title }
@@ -210,7 +210,7 @@ You can validate Twitter preview cards at [https://cards-dev.twitter.com/validat
 ## Configuration
 
 You can verify the configuration in real-time using elm reactor:
-```
+```sh
 $ node_modules/.bin/elm reactor
 ```
 and check the page
@@ -224,7 +224,7 @@ There are three global objects available
 ### `ElmStarter`
 
 `ElmStarter` contain metadata about the app:
-```
+```json
 { commit: "abf04f3"   // coming from git
 , branch: "master"    // coming from git
 , env: "dev"          // can be "dev" or "prod"
