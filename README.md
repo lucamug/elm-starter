@@ -158,11 +158,11 @@ The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These file
 ## File generation
 
 * Most of the logic is written in Elm, including the code to generate all necessary files:
-    * `index.html` (generated from [`Index.elm`](https://github.com/lucamug/elm-start-private/blob/master/src/Index.elm) using [`zwilias/elm-html-string`](https://package.elm-lang.org/packages/zwilias/elm-html-string/latest/))
-    * [`sitemap.txt`](https://elm-starter.guupa.com/sitemap.txt)
-    * [`manifest.json`](https://elm-starter.guupa.com/manifest.json)
-    * [`service-worker.js`](https://elm-starter.guupa.com/service-worker.js)
-    * [`robots.txt`](https://elm-starter.guupa.com/robots.txt)
+  * `index.html` (generated from [`Index.elm`](https://github.com/lucamug/elm-start-private/blob/master/src/Index.elm) using [`zwilias/elm-html-string`](https://package.elm-lang.org/packages/zwilias/elm-html-string/latest/))
+  * [`sitemap.txt`](https://elm-starter.guupa.com/sitemap.txt)
+  * [`manifest.json`](https://elm-starter.guupa.com/manifest.json)
+  * [`service-worker.js`](https://elm-starter.guupa.com/service-worker.js)
+  * [`robots.txt`](https://elm-starter.guupa.com/robots.txt)
 
 ## Disabling pre-rendering
 
