@@ -8,7 +8,7 @@ Example of the installed version, with and without Javascript enabled:
 
 ![elm-starter](assets/dev/elm-starter.gif)
 
-### Demos
+## Demos
 
 These are three simple examples of websites built with `elm-starter`:
 
