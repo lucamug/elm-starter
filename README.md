@@ -194,7 +194,7 @@ Support [https://github.com/kraklin/elm-debug-transformer](https://github.com/kr
 
 For better SEO, you should update meta-tags using the predefined port `changeMeta` that you can use this way:
 
-```json
+```elm
 Cmd.batch
     [ changeMeta { querySelector = "title", fieldName = "innerHTML", content = title }
     , changeMeta { querySelector = "meta[property='og:title']", fieldName = "content", content = title }
@@ -230,7 +230,7 @@ There are three global objects available
 
 `ElmStarter` contain metadata about the app:
 
-```json
+```javascript
 { commit: "abf04f3"   // coming from git
 , branch: "master"    // coming from git
 , env: "dev"          // can be "dev" or "prod"
