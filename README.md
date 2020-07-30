@@ -18,7 +18,7 @@ These are three simple examples of websites built with `elm-starter`:
 
 ![elm-starter](assets/dev/collection.png)
 
-# Characteristics
+## Characteristics
 
 * Generate a PWA (Progressive Web Application)
 * Mostly written in Elm
@@ -43,7 +43,7 @@ Slack's previews (note how different urls have different snapshot and meta-data)
 
 ![Slack's previews](assets/dev/slack-previews.jpg)
 
-# How to bootstrap a new project
+## How to bootstrap a new project
 
 `elm-starter` is not published in npm yet and it doesn't have a specific command to bootstrap a project, so the way it works now is cloning this repo.
 
@@ -81,7 +81,7 @@ Launches a server in the `build` folder.
 
 Open [http://localhost:9000](http://localhost:9000) to view it in the browser.
 
-# How to use `elm-starter` in existing Elm application
+## How to use `elm-starter` in existing Elm application
 
 Let's suppose your existing project is in `my-elm-app`
 
@@ -129,14 +129,14 @@ Let's suppose your existing project is in `my-elm-app`
     ```
 Done!
 
-# Netlify
+## Netlify
 
 When setting up the app with Netlify, input these in the deploy configuration:
 
 * Build command: `npm run build` (or `node ./src-elm-starter/starter.js start`)
 * Publish directory: `elm-stuff/elm-starter-files/build`
 
-# (\*) Applications working without Javascript
+## (\*) Applications working without Javascript
 
 Working without Javascript depends on the application. The `elm-starter` example works completely fine also without Javascript, the only missing thing is the smooth transition between pages.
 
@@ -150,7 +150,7 @@ The setup for these two cases is a bit different. `Browser.application` requires
 
 The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These files are automatically generated and should not be edited directly, unless during some debugging process.
 
-# Advanced stuff
+## Advanced stuff
 
 ## File generation
 
@@ -242,7 +242,7 @@ This data is also available in Elm through Flags.
 
 This is the object exposed by the compiler used to initialize the application.
 
-# Limitations
+## Limitations
 
 * Javascript and CSS to generate the initial `index.html` are actually strings :-(
 * `src-elm-starter/starter.js`, the core of `elm-starter`, is ~330 lines of Javascript. I wish it could be smaller
@@ -252,7 +252,7 @@ Note
 
 * The smooth rotational transition in the demo only works in Chrome. I realized it too late, but you get the picture
 
-# Non-goals
+## Non-goals
 
 Things that `elm-starter` is not expected to do
 
@@ -276,7 +276,7 @@ It cannot help you with
 * Server Rendering
 * SSR with (re)hydration
 
-# Similar projects
+## Similar projects
 
 These are other projects that can be used to bootstrap an Elm application or to generate a static site:
 
