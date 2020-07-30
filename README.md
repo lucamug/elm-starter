@@ -12,9 +12,9 @@ Example of the installed version, with and without Javascript enabled:
 
 These are three simple examples of websites built with `elm-starter`:
 
-* https://elm-starter.guupa.com/ ([Code](https://github.com/lucamug/elm-starter))
-* https://elm-todomvc.guupa.com/ ([Code](https://github.com/lucamug/elm-todomvc))
-* https://elm-spa-example.guupa.com/ ([Code](https://github.com/lucamug/elm-spa-example))
+* [https://elm-starter.guupa.com/](https://elm-starter.guupa.com/) ([Code](https://github.com/lucamug/elm-starter))
+* [https://elm-todomvc.guupa.com/](https://elm-todomvc.guupa.com/) ([Code](https://github.com/lucamug/elm-todomvc))
+* [https://elm-spa-example.guupa.com/](https://elm-spa-example.guupa.com/) ([Code](https://github.com/lucamug/elm-spa-example))
 
 ![elm-starter](assets/dev/collection.png)
 
@@ -98,7 +98,7 @@ Let's suppose your existing project is in `my-elm-app`
   * "description"
   * "author"
   * "twitterSite" - A reference to a Twitter handle (Just the id without "@")
-  * "twitterCreator" - Another Twitter handle, refer to [Twitter cards markups](https://developer.twitter.com/en/docs/  tweets/optimize-with-cards/overview/markup)
+  * "twitterCreator" - Another Twitter handle, refer to [Twitter cards markups]([https://developer.twitter.com/en/docs/](https://developer.twitter.com/en/docs/)  tweets/optimize-with-cards/overview/markup)
   * "version"
   * "homepage"
   * "license"
@@ -185,7 +185,7 @@ Moreover `Main.conf` is used by `src-elm-starter` to generate all the static fil
 
 ## elm-console-debug.js for nice console output
 
-Support https://github.com/kraklin/elm-debug-transformer out of the box for nice `Debug.log` messages in the console.
+Support [https://github.com/kraklin/elm-debug-transformer](https://github.com/kraklin/elm-debug-transformer) out of the box for nice `Debug.log` messages in the console.
 
 ## Changing meta-tags
 
@@ -203,7 +203,7 @@ Cmd.batch
     ]
 ```
 
-You can validate Twitter preview cards at https://cards-dev.twitter.com/validator
+You can validate Twitter preview cards at [https://cards-dev.twitter.com/validator](https://cards-dev.twitter.com/validator)
 
 ![elm-starter](assets/dev/twitter-card.jpg)
 
@@ -215,7 +215,7 @@ $ node_modules/.bin/elm reactor
 ```
 and check the page
 
-http://localhost:8000/src-elm-starter/Application.elm
+[http://localhost:8000/src-elm-starter/Application.elm](http://localhost:8000/src-elm-starter/Application.elm)
 
 ## Globally available objects
 
