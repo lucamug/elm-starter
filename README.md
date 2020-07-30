@@ -54,11 +54,11 @@ The fastest way is to [click here](https://app.netlify.com/start/deploy?reposito
 Otherwise the steps are:
 
 ```sh
-$ git clone https://github.com/lucamug/elm-starter
-$ mv elm-starter my-new-project
-$ cd my-new-project
-$ rm -rf .git
-$ npm install
+git clone https://github.com/lucamug/elm-starter
+mv elm-starter my-new-project
+cd my-new-project
+rm -rf .git
+npm install
 ```
 
 Done! At this point, these are the available commands:
@@ -110,13 +110,13 @@ Let's suppose your existing project is in `my-elm-app`
 * Add `node` dependencies with these commands
 
     ```sh
-    $ npm install --save-dev chokidar-cli
-    $ npm install --save-dev concurrently
-    $ npm install --save-dev elm
-    $ npm install --save-dev elm-live
-    $ npm install --save-dev html-minifier
-    $ npm install --save-dev puppeteer
-    $ npm install --save-dev terser
+    npm install --save-dev chokidar-cli
+    npm install --save-dev concurrently
+    npm install --save-dev elm
+    npm install --save-dev elm-live
+    npm install --save-dev html-minifier
+    npm install --save-dev puppeteer
+    npm install --save-dev terser
     ```
 
 * Add `src-elm-starter` as an extra `source-directory` in `elm.json`, the same as in `elm-starter/elm.json`
@@ -215,7 +215,7 @@ You can validate Twitter preview cards at [https://cards-dev.twitter.com/validat
 You can verify the configuration in real-time using elm reactor:
 
 ```sh
-$ node_modules/.bin/elm reactor
+node_modules/.bin/elm reactor
 ```
 
 and check the page
