@@ -1,6 +1,6 @@
 # elm-starter
 
-`elm-starter` is an experimental Elm-based Elm bootstrapper that can also be plugged into already existing Elm applications. 
+`elm-starter` is an experimental Elm-based Elm bootstrapper that can also be plugged into already existing Elm applications.
 
 Post ["elm-starter", a tool for the Modern Web](https://dev.to/lucamug/elm-starter-a-tool-for-the-modern-web-53b1).
 
@@ -8,30 +8,17 @@ Example of the installed version, with and without Javascript enabled:
 
 ![elm-starter](assets/dev/elm-starter.gif)
 
-
-### Demos
+## Demos
 
 These are three simple examples of websites built with `elm-starter`:
 
-* https://elm-starter.guupa.com/ ([Code](https://github.com/lucamug/elm-starter))
-* https://elm-todomvc.guupa.com/ ([Code](https://github.com/lucamug/elm-todomvc))
-* https://elm-spa-example.guupa.com/ ([Code](https://github.com/lucamug/elm-spa-example))
+* [https://elm-starter.guupa.com/](https://elm-starter.guupa.com/) ([Code](https://github.com/lucamug/elm-starter))
+* [https://elm-todomvc.guupa.com/](https://elm-todomvc.guupa.com/) ([Code](https://github.com/lucamug/elm-todomvc))
+* [https://elm-spa-example.guupa.com/](https://elm-spa-example.guupa.com/) ([Code](https://github.com/lucamug/elm-spa-example))
 
 ![elm-starter](assets/dev/collection.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-# Characteristics
+## Characteristics
 
 * Generate a PWA (Progressive Web Application)
 * Mostly written in Elm
@@ -56,14 +43,7 @@ Slack's previews (note how different urls have different snapshot and meta-data)
 
 ![Slack's previews](assets/dev/slack-previews.jpg)
 
-
-
-
-
-
-
-
-# How to bootstrap a new project
+## How to bootstrap a new project
 
 `elm-starter` is not published in npm yet and it doesn't have a specific command to bootstrap a project, so the way it works now is cloning this repo.
 
@@ -73,14 +53,15 @@ The fastest way is to [click here](https://app.netlify.com/start/deploy?reposito
 
 Otherwise the steps are:
 
+```sh
+git clone https://github.com/lucamug/elm-starter
+mv elm-starter my-new-project
+cd my-new-project
+rm -rf .git
+npm install
 ```
-$ git clone https://github.com/lucamug/elm-starter
-$ mv elm-starter my-new-project
-$ cd my-new-project
-$ rm -rf .git
-$ npm install
-```
-Done! At this point, these are the available commands:
+
+Done! `elm-starter` is installed. To start using it you must create your own git repository, add files and make a commit (example: `git init && git add . && git commit -m "initial commit"`). At this point, these are the available commands:
 
 ### `$ npm start`
 
@@ -101,26 +82,11 @@ Launches a server in the `build` folder.
 
 Open [http://localhost:9000](http://localhost:9000) to view it in the browser.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# How to use `elm-starter` in existing Elm application
+## How to use `elm-starter` in existing Elm application
 
 Let's suppose your existing project is in `my-elm-app`
 
-* Clone `elm-starter` with<br> 
+* Clone `elm-starter` with  
     `$ git clone https://github.com/lucamug/elm-starter.git`
 * Copy the folder [`elm-starter/src-elm-starter/`](https://github.com/lucamug/elm-starter/tree/master/src-elm-starter) to `my-elm-app/src-elm-starter/`
 * Copy the file [`elm-starter/src/Index.elm`](https://github.com/lucamug/elm-starter/blob/master/src/Index.elm) to `my-elm-app/src/Index.elm`
@@ -133,7 +99,7 @@ Let's suppose your existing project is in `my-elm-app`
   * "description"
   * "author"
   * "twitterSite" - A reference to a Twitter handle (Just the id without "@")
-  * "twitterCreator" - Another Twitter handle, refer to [Twitter cards markups](https://developer.twitter.com/en/docs/  tweets/optimize-with-cards/overview/markup)
+  * "twitterCreator" - Another Twitter handle, refer to [Twitter cards markups]([https://developer.twitter.com/en/docs/](https://developer.twitter.com/en/docs/)  tweets/optimize-with-cards/overview/markup)
   * "version"
   * "homepage"
   * "license"
@@ -141,59 +107,39 @@ Let's suppose your existing project is in `my-elm-app`
   * "snapshotHeight" - default: 350 px
   * "themeColor" - default: { "red": 15, "green": 85, "blue": 123 }
 
-* Add `node` dependencies with these commands 
-    
+* Add `node` dependencies with these commands
+
+    ```sh
+    npm install --save-dev chokidar-cli
+    npm install --save-dev concurrently
+    npm install --save-dev elm
+    npm install --save-dev elm-live
+    npm install --save-dev html-minifier
+    npm install --save-dev puppeteer
+    npm install --save-dev terser
     ```
-    $ npm install --save-dev chokidar-cli
-    $ npm install --save-dev concurrently
-    $ npm install --save-dev elm
-    $ npm install --save-dev elm-live
-    $ npm install --save-dev html-minifier
-    $ npm install --save-dev puppeteer
-    $ npm install --save-dev terser
-    ```
-    
+
 * Add `src-elm-starter` as an extra `source-directory` in `elm.json`, the same as in `elm-starter/elm.json`
 * Add these commands to `package.json` (or run them directly)
-    ```
+
+    ```json
       "scripts": {
         "start":       "node ./src-elm-starter/starter.js start",
         "build":       "node ./src-elm-starter/starter.js build",
         "serverBuild": "node ./src-elm-starter/starter.js serverBuild"
       },
     ```
+
 Done!
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Netlify
+## Netlify
 
 When setting up the app with Netlify, input these in the deploy configuration:
 
 * Build command: `npm run build` (or `node ./src-elm-starter/starter.js start`)
 * Publish directory: `elm-stuff/elm-starter-files/build`
 
-
-
-
-
-
-
-
-
-# (\*) Applications working without Javascript
+## (\*) Applications working without Javascript
 
 Working without Javascript depends on the application. The `elm-starter` example works completely fine also without Javascript, the only missing thing is the smooth transition between pages.
 
@@ -207,31 +153,22 @@ The setup for these two cases is a bit different. `Browser.application` requires
 
 The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These files are automatically generated and should not be edited directly, unless during some debugging process.
 
-
-
-
-
-
-
-
-
-# Advanced stuff
+## Advanced stuff
 
 ## File generation
 
 * Most of the logic is written in Elm, including the code to generate all necessary files:
-    * `index.html` (generated from [`Index.elm`](https://github.com/lucamug/elm-start-private/blob/master/src/Index.elm) using [`zwilias/elm-html-string`](https://package.elm-lang.org/packages/zwilias/elm-html-string/latest/))
-    * [`sitemap.txt`](https://elm-starter.guupa.com/sitemap.txt)
-    * [`manifest.json`](https://elm-starter.guupa.com/manifest.json)
-    * [`service-worker.js`](https://elm-starter.guupa.com/service-worker.js)
-    * [`robots.txt`](https://elm-starter.guupa.com/robots.txt)
-
+  * `index.html` (generated from [`Index.elm`](https://github.com/lucamug/elm-start-private/blob/master/src/Index.elm) using [`zwilias/elm-html-string`](https://package.elm-lang.org/packages/zwilias/elm-html-string/latest/))
+  * [`sitemap.txt`](https://elm-starter.guupa.com/sitemap.txt)
+  * [`manifest.json`](https://elm-starter.guupa.com/manifest.json)
+  * [`service-worker.js`](https://elm-starter.guupa.com/service-worker.js)
+  * [`robots.txt`](https://elm-starter.guupa.com/robots.txt)
 
 ## Disabling pre-rendering
 
 Is possible to disable pre-rendering just passing an empty list to `Main.conf.urls`. In this case the app will work as "Full CSR" (Full Client-side Rendering)
 
-## How to customize your project.
+## How to customize your project
 
 The main two places where you can change stuff are:
 
@@ -246,18 +183,18 @@ The reason `Main.conf` is inside `Main.elm` is so that it can exchange data. For
 
 * `title`: `Main.conf` -> `Main`
 * `urls`: `Main.conf` <- `Main`
-    
+
 Moreover `Main.conf` is used by `src-elm-starter` to generate all the static files.
 
 ## elm-console-debug.js for nice console output
 
-Support https://github.com/kraklin/elm-debug-transformer out of the box for nice `Debug.log` messages in the console.
+Support [https://github.com/kraklin/elm-debug-transformer](https://github.com/kraklin/elm-debug-transformer) out of the box for nice `Debug.log` messages in the console.
 
 ## Changing meta-tags
 
 For better SEO, you should update meta-tags using the predefined port `changeMeta` that you can use this way:
 
-```
+```json
 Cmd.batch
     [ changeMeta { querySelector = "title", fieldName = "innerHTML", content = title }
     , changeMeta { querySelector = "meta[property='og:title']", fieldName = "content", content = title }
@@ -269,19 +206,21 @@ Cmd.batch
     ]
 ```
 
-You can validate Twitter preview cards at https://cards-dev.twitter.com/validator
+You can validate Twitter preview cards at [https://cards-dev.twitter.com/validator](https://cards-dev.twitter.com/validator)
 
 ![elm-starter](assets/dev/twitter-card.jpg)
 
 ## Configuration
 
 You can verify the configuration in real-time using elm reactor:
+
+```sh
+node_modules/.bin/elm reactor
 ```
-$ node_modules/.bin/elm reactor
-```
+
 and check the page
 
-http://localhost:8000/src-elm-starter/Application.elm
+[http://localhost:8000/src-elm-starter/Application.elm](http://localhost:8000/src-elm-starter/Application.elm)
 
 ## Globally available objects
 
@@ -290,9 +229,10 @@ There are three global objects available
 ### `ElmStarter`
 
 `ElmStarter` contain metadata about the app:
-```
+
+```json
 { commit: "abf04f3"   // coming from git
-, branch: "master"    // coming from git 
+, branch: "master"    // coming from git
 , env: "dev"          // can be "dev" or "prod"
 , version: "0.0.5"    // coming from package.json
 }
@@ -308,28 +248,7 @@ This data is also available in Elm through Flags.
 
 This is the object exposed by the compiler used to initialize the application.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Limitations
+## Limitations
 
 * Javascript and CSS to generate the initial `index.html` are actually strings :-(
 * `src-elm-starter/starter.js`, the core of `elm-starter`, is ~330 lines of Javascript. I wish it could be smaller
@@ -339,23 +258,16 @@ Note
 
 * The smooth rotational transition in the demo only works in Chrome. I realized it too late, but you get the picture
 
+## Non-goals
 
-
-
-
-
-
-
-# Non-goals
-
-Things that `elm-starter` is not expected to do 
+Things that `elm-starter` is not expected to do
 
 * Doesn't generate Elm code automatically, like Route-parser, for example
 * Doesn't touch/wrap the code of your Elm Application
 * Doesn't do live SSR (Server Side Render) but just pre-render during the build
 * Doesn't change the Javascript coming out from the Elm compiler
 * Doesn't create a web site based on static files containing Markdown
-* There is no "[hydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web)", unless Elm does some magic that I am not aware of. 
+* There is no "[hydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web)", unless Elm does some magic that I am not aware of.
 
 You can find several of these characteristics in some of the [similar projects](#similar-projects).
 
@@ -370,13 +282,7 @@ It cannot help you with
 * Server Rendering
 * SSR with (re)hydration
 
-
-
-
- 
- 
- 
-# Similar projects
+## Similar projects
 
 These are other projects that can be used to bootstrap an Elm application or to generate a static site:
 
