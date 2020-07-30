@@ -8,7 +8,6 @@ Example of the installed version, with and without Javascript enabled:
 
 ![elm-starter](assets/dev/elm-starter.gif)
 
-
 ### Demos
 
 These are three simple examples of websites built with `elm-starter`:
@@ -18,18 +17,6 @@ These are three simple examples of websites built with `elm-starter`:
 * https://elm-spa-example.guupa.com/ ([Code](https://github.com/lucamug/elm-spa-example))
 
 ![elm-starter](assets/dev/collection.png)
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Characteristics
 
@@ -55,13 +42,6 @@ Lighthouse report:
 Slack's previews (note how different urls have different snapshot and meta-data):
 
 ![Slack's previews](assets/dev/slack-previews.jpg)
-
-
-
-
-
-
-
 
 # How to bootstrap a new project
 
@@ -101,21 +81,6 @@ Launches a server in the `build` folder.
 
 Open [http://localhost:9000](http://localhost:9000) to view it in the browser.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # How to use `elm-starter` in existing Elm application
 
 Let's suppose your existing project is in `my-elm-app`
@@ -141,8 +106,8 @@ Let's suppose your existing project is in `my-elm-app`
   * "snapshotHeight" - default: 350 px
   * "themeColor" - default: { "red": 15, "green": 85, "blue": 123 }
 
-* Add `node` dependencies with these commands 
-    
+* Add `node` dependencies with these commands
+
     ```
     $ npm install --save-dev chokidar-cli
     $ npm install --save-dev concurrently
@@ -152,7 +117,7 @@ Let's suppose your existing project is in `my-elm-app`
     $ npm install --save-dev puppeteer
     $ npm install --save-dev terser
     ```
-    
+
 * Add `src-elm-starter` as an extra `source-directory` in `elm.json`, the same as in `elm-starter/elm.json`
 * Add these commands to `package.json` (or run them directly)
     ```
@@ -164,34 +129,12 @@ Let's suppose your existing project is in `my-elm-app`
     ```
 Done!
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Netlify
 
 When setting up the app with Netlify, input these in the deploy configuration:
 
 * Build command: `npm run build` (or `node ./src-elm-starter/starter.js start`)
 * Publish directory: `elm-stuff/elm-starter-files/build`
-
-
-
-
-
-
-
-
 
 # (\*) Applications working without Javascript
 
@@ -207,14 +150,6 @@ The setup for these two cases is a bit different. `Browser.application` requires
 
 The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These files are automatically generated and should not be edited directly, unless during some debugging process.
 
-
-
-
-
-
-
-
-
 # Advanced stuff
 
 ## File generation
@@ -225,7 +160,6 @@ The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These file
     * [`manifest.json`](https://elm-starter.guupa.com/manifest.json)
     * [`service-worker.js`](https://elm-starter.guupa.com/service-worker.js)
     * [`robots.txt`](https://elm-starter.guupa.com/robots.txt)
-
 
 ## Disabling pre-rendering
 
@@ -246,7 +180,7 @@ The reason `Main.conf` is inside `Main.elm` is so that it can exchange data. For
 
 * `title`: `Main.conf` -> `Main`
 * `urls`: `Main.conf` <- `Main`
-    
+
 Moreover `Main.conf` is used by `src-elm-starter` to generate all the static files.
 
 ## elm-console-debug.js for nice console output
@@ -292,7 +226,7 @@ There are three global objects available
 `ElmStarter` contain metadata about the app:
 ```
 { commit: "abf04f3"   // coming from git
-, branch: "master"    // coming from git 
+, branch: "master"    // coming from git
 , env: "dev"          // can be "dev" or "prod"
 , version: "0.0.5"    // coming from package.json
 }
@@ -308,27 +242,6 @@ This data is also available in Elm through Flags.
 
 This is the object exposed by the compiler used to initialize the application.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Limitations
 
 * Javascript and CSS to generate the initial `index.html` are actually strings :-(
@@ -339,23 +252,16 @@ Note
 
 * The smooth rotational transition in the demo only works in Chrome. I realized it too late, but you get the picture
 
-
-
-
-
-
-
-
 # Non-goals
 
-Things that `elm-starter` is not expected to do 
+Things that `elm-starter` is not expected to do
 
 * Doesn't generate Elm code automatically, like Route-parser, for example
 * Doesn't touch/wrap the code of your Elm Application
 * Doesn't do live SSR (Server Side Render) but just pre-render during the build
 * Doesn't change the Javascript coming out from the Elm compiler
 * Doesn't create a web site based on static files containing Markdown
-* There is no "[hydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web)", unless Elm does some magic that I am not aware of. 
+* There is no "[hydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web)", unless Elm does some magic that I am not aware of.
 
 You can find several of these characteristics in some of the [similar projects](#similar-projects).
 
@@ -370,12 +276,6 @@ It cannot help you with
 * Server Rendering
 * SSR with (re)hydration
 
-
-
-
- 
- 
- 
 # Similar projects
 
 These are other projects that can be used to bootstrap an Elm application or to generate a static site:
