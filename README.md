@@ -168,7 +168,7 @@ The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These file
 
 Is possible to disable pre-rendering just passing an empty list to `Main.conf.urls`. In this case the app will work as "Full CSR" (Full Client-side Rendering)
 
-## How to customize your project.
+## How to customize your project
 
 The main two places where you can change stuff are:
 
