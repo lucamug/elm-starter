@@ -1,6 +1,6 @@
 # elm-starter
 
-`elm-starter` is an experimental Elm-based Elm bootstrapper that can also be plugged into already existing Elm applications. 
+`elm-starter` is an experimental Elm-based Elm bootstrapper that can also be plugged into already existing Elm applications.
 
 Post ["elm-starter", a tool for the Modern Web](https://dev.to/lucamug/elm-starter-a-tool-for-the-modern-web-53b1).
 
@@ -120,7 +120,7 @@ Open [http://localhost:9000](http://localhost:9000) to view it in the browser.
 
 Let's suppose your existing project is in `my-elm-app`
 
-* Clone `elm-starter` with<br> 
+* Clone `elm-starter` with  
     `$ git clone https://github.com/lucamug/elm-starter.git`
 * Copy the folder [`elm-starter/src-elm-starter/`](https://github.com/lucamug/elm-starter/tree/master/src-elm-starter) to `my-elm-app/src-elm-starter/`
 * Copy the file [`elm-starter/src/Index.elm`](https://github.com/lucamug/elm-starter/blob/master/src/Index.elm) to `my-elm-app/src/Index.elm`
