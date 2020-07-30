@@ -60,6 +60,7 @@ $ cd my-new-project
 $ rm -rf .git
 $ npm install
 ```
+
 Done! At this point, these are the available commands:
 
 ### `$ npm start`
@@ -120,6 +121,7 @@ Let's suppose your existing project is in `my-elm-app`
 
 * Add `src-elm-starter` as an extra `source-directory` in `elm.json`, the same as in `elm-starter/elm.json`
 * Add these commands to `package.json` (or run them directly)
+
     ```json
       "scripts": {
         "start":       "node ./src-elm-starter/starter.js start",
@@ -127,6 +129,7 @@ Let's suppose your existing project is in `my-elm-app`
         "serverBuild": "node ./src-elm-starter/starter.js serverBuild"
       },
     ```
+
 Done!
 
 ## Netlify
@@ -210,9 +213,11 @@ You can validate Twitter preview cards at [https://cards-dev.twitter.com/validat
 ## Configuration
 
 You can verify the configuration in real-time using elm reactor:
+
 ```sh
 $ node_modules/.bin/elm reactor
 ```
+
 and check the page
 
 [http://localhost:8000/src-elm-starter/Application.elm](http://localhost:8000/src-elm-starter/Application.elm)
@@ -224,6 +229,7 @@ There are three global objects available
 ### `ElmStarter`
 
 `ElmStarter` contain metadata about the app:
+
 ```json
 { commit: "abf04f3"   // coming from git
 , branch: "master"    // coming from git
