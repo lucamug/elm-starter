@@ -61,7 +61,11 @@ rm -rf .git
 npm install
 ```
 
-Done! `elm-starter` is installed. To start using it you must create your own git repository, add files and make a commit (example: `git init && git add . && git commit -m "initial commit"`). At this point, these are the available commands:
+Done! `elm-starter` is installed.
+
+To start using it you should create your own git repository, add files and make a commit (example: `git init && git add . && git commit -m "initial commit"`).
+
+These are the available commands:
 
 ### `$ npm start`
 
