@@ -21,12 +21,25 @@ const styleSubtitle = `    ${dim}${fgYellow}%s${reset}`;
 const styleDebug = `    ${fgMagenta}%s${reset}`;
 const styleWarning = `    ${fgRed}Warning:${reset} %s`;
 const arg = process.argv[2] ? process.argv[2] : "";
-const commit = child_process.execSync('git rev-parse --short HEAD').toString().replace(/^\s+|\s+$/g, '');
-const branch = child_process.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/^\s+|\s+$/g, '');
 const DEV = "dev";
 const PROD = "prod";
 const NOT_AVAILABLE = "N/A";
+let commit; 
+let branch;
 
+try {
+    commit = child_process.execSync('git rev-parse --short HEAD').toString().replace(/^\s+|\s+$/g, '');
+} catch(err) {
+    console.log(styleWarning, `Make this a git repository so we can add the commit info.`);
+    commit = `commit ${NOT_AVAILABLE}`;
+}
+
+try {
+    branch = child_process.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/^\s+|\s+$/g, '');
+} catch(err) {
+    console.log(styleWarning, `Make this a git repository so we can add the branch info.`);
+    branch = `branch ${NOT_AVAILABLE}`;
+}
 
 [ "name"
 , "nameLong"
