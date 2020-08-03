@@ -136,6 +136,60 @@ Let's suppose your existing project is in `my-elm-app`
 
 Done!
 
+## `sandbox` vs. `element` vs. `document` vs. `application`
+
+In Elm there are several ways to start an application:
+
+* [Browser.sandbox](https://package.elm-lang.org/packages/elm/browser/latest/Browser#sandbox)
+* [Browser.element](https://package.elm-lang.org/packages/elm/browser/latest/Browser#element)
+* [Browser.document](https://package.elm-lang.org/packages/elm/browser/latest/Browser#document)
+* [Browser.application](https://package.elm-lang.org/packages/elm/browser/latest/Browser#application)
+
+Among these, the first two take over only one specific node of the DOM, the other two instead take over the entire body of the page. So we need to follow two different strategies.
+
+### Case for `sandbox` & `element`
+
+In the `Index.elm` you need to create a `<div>` that will be used to attach the Elm application.
+
+In the `elm-starter` example we use a `<div>` with id `elm`. In `Index.elm`, see the line:
+
+```
+    ++ [ div [ id "elm" ] [] ]
+```
+
+Then we use this node to initialize Elm:
+
+```
+var node = document.getElementById('elm');
+window.ElmApp = Elm.Main.init(
+    { node: node
+    , flags: ...you flags here...
+    }
+```
+
+Then, to be sure that the node created by the static page generator is replaced later on, we need to add such `<div>` in the  `view` of `Main.elm` like this:
+
+```
+view : Model -> Html.Html Msg
+view model =
+    Html.div
+        [ Html.Attributes.id "elm" ]
+        [ ...you content here... ]
+```
+
+Note: You can change the id from `elm` to anything you like.
+
+### Case for `document` & `application`
+
+This case require a different approach. You can see an example in the [elm-spa-example](https://github.com/lucamug/elm-spa-example).
+
+The main differences compared to the above approach are:
+
+* You **don't** need to create a specific `<div>` with id `elm`.
+* You need to move all Javascript section of the page into the `htmlToReinject` section (see [Index.elm](https://github.com/lucamug/elm-spa-example/blob/master/src/Index.elm) as example).
+
+`htmlToReinject` will be injected after the page is generated during the build process assuring that the system will work also in this case.
+
 ## Netlify
 
 When setting up the app with Netlify, input these in the deploy configuration:
