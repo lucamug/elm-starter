@@ -16,7 +16,8 @@ These are three simple examples of websites built with `elm-starter`:
 * [https://elm-todomvc.guupa.com/](https://elm-todomvc.guupa.com/) ([Code](https://github.com/lucamug/elm-todomvc))
 * [https://elm-spa-example.guupa.com/](https://elm-spa-example.guupa.com/) ([Code](https://github.com/lucamug/elm-spa-example))
 
-![elm-starter](assets/dev/collection.png)
+![Collection of examples](assets/dev/collection.png)
+![elm-physics-example](assets/dev/elm-physics-example.png)
 
 ## Characteristics
 
