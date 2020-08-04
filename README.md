@@ -15,6 +15,7 @@ These are three simple examples of websites built with `elm-starter`:
 * [https://elm-starter.guupa.com/](https://elm-starter.guupa.com/) ([Code](https://github.com/lucamug/elm-starter))
 * [https://elm-todomvc.guupa.com/](https://elm-todomvc.guupa.com/) ([Code](https://github.com/lucamug/elm-todomvc))
 * [https://elm-spa-example.guupa.com/](https://elm-spa-example.guupa.com/) ([Code](https://github.com/lucamug/elm-spa-example))
+* [https://elm-physics-example.guupa.com/](https://elm-physics-example.guupa.com/) ([Code](https://github.com/lucamug/elm-physics-example))
 
 ![Collection of examples](assets/dev/collection.png)
 ![elm-physics-example](assets/dev/elm-physics-example.png)
@@ -226,6 +227,13 @@ The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These file
 ## Disabling pre-rendering
 
 Is possible to disable pre-rendering just passing an empty list to `Main.conf.urls`. In this case the app will work as "Full CSR" (Full Client-side Rendering)
+
+This is an example of application with pre-rendering disabled. In this case also the WebGL animation caused some time out issue with puppeteer and it would not be necessary anyway to have this application render without Javascript as it based entirely on Javascript.
+
+Not the message when Javascript is disabled:
+
+![elm-physics-example](assets/dev/elm-physics-example-animation.gif)
+
 
 ## How to customize your project
 
