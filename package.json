@@ -16,7 +16,7 @@
     }
 , "main": "index.js"
 , "scripts": 
-    { "start": "node ./src-elm-starter/starter.js start"
+    { "dev": "node ./src-elm-starter/starter.js start"
     , "build": "node ./src-elm-starter/starter.js build"
     , "serverBuild": "node ./src-elm-starter/starter.js serverBuild"
     }
