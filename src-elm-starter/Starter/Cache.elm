@@ -5,12 +5,12 @@ import Starter.ConfMeta
 import Starter.Icon
 
 
-stuffToCache : List String
-stuffToCache =
-    [ Starter.ConfMeta.conf.fileNames.outputCompiledJs
-    , Starter.ConfMeta.conf.fileNames.manifestJson
+stuffToCache : String -> List String
+stuffToCache relative =
+    [ relative ++ Starter.ConfMeta.conf.fileNames.outputCompiledJs
+    , relative ++ Starter.ConfMeta.conf.fileNames.manifestJson
     ]
         ++ List.map (\url -> url) Main.conf.urls
         ++ Main.conf.assetsToCache
-        ++ List.map (\size -> Starter.Icon.iconFileName size) Starter.Icon.iconsToBeCached
+        ++ List.map (\size -> Starter.Icon.iconFileName relative size) Starter.Icon.iconsToBeCached
         |> List.map (\url -> String.replace "//" "/" url)

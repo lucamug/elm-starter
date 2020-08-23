@@ -12,6 +12,10 @@ import Starter.SnippetJavascript
 
 index : Starter.Flags.Flags -> Html msg
 index flags =
+    let
+        relative =
+            Starter.Flags.relativeFromFlags flags
+    in
     html
         [ lang "en" ]
         [ head []
@@ -23,8 +27,8 @@ index flags =
                    , meta [ name "viewport", content "width=device-width, initial-scale=1, shrink-to-fit=no" ] []
                    , meta [ httpEquiv "x-ua-compatible", content "ie=edge" ] []
                    , link [ rel "canonical", href flags.homepage ] []
-                   , link [ rel "icon", href (Starter.Icon.iconFileName 64) ] []
-                   , link [ rel "apple-touch-icon", href (Starter.Icon.iconFileName 152) ] []
+                   , link [ rel "icon", href (Starter.Icon.iconFileName relative 64) ] []
+                   , link [ rel "apple-touch-icon", href (Starter.Icon.iconFileName relative 152) ] []
                    , style_ []
                         [ text <| """
                             body 
@@ -34,7 +38,7 @@ index flags =
                                 }""" ]
                    ]
                 ++ Starter.SnippetHtml.messagesStyle
-                ++ Starter.SnippetHtml.pwa (Starter.Flags.flagsToThemeColor flags)
+                ++ Starter.SnippetHtml.pwa relative (Starter.Flags.flagsToThemeColor flags)
                 ++ Starter.SnippetHtml.previewCards flags Main.conf
             )
         , body []
@@ -53,11 +57,11 @@ index flags =
                 -- Activating the "Loading..." message
                 ++ Starter.SnippetHtml.messageLoadingOn
                 -- Loading Elm code
-                ++ [ script [ src "/elm.js" ] [] ]
+                ++ [ script [ src (relative ++ "/elm.js") ] [] ]
                 -- Elm finished to load, de-activating the "Loading..." message
                 ++ Starter.SnippetHtml.messageLoadingOff
                 -- Loading utility for pretty console formatting
-                ++ Starter.SnippetHtml.prettyConsoleFormatting flags.env
+                ++ Starter.SnippetHtml.prettyConsoleFormatting relative flags.env
                 -- Signature "Made with ❤ and Elm"
                 ++ [ script [] [ textUnescaped Starter.SnippetJavascript.signature ] ]
                 -- Initializing "window.ElmStarter"
@@ -87,7 +91,7 @@ index flags =
                         ]
                    ]
                 -- Register the Service Worker, we are a PWA!
-                ++ [ script [] [ textUnescaped Starter.SnippetJavascript.registerServiceWorker ] ]
+                ++ [ script [] [ textUnescaped (Starter.SnippetJavascript.registerServiceWorker relative) ] ]
             )
         ]
 

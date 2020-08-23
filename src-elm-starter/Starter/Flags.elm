@@ -10,9 +10,11 @@ module Starter.Flags exposing
     , flagsEncoder
     , flagsToThemeColor
     , flagsToThemeColorRgb
+    , relativeFromFlags
     )
 
 import Json.Encode
+import Url
 
 
 type Env
@@ -131,35 +133,66 @@ flagsToThemeColor flags =
 type alias Dir =
     { bin : String
     , build : String
+    , buildRoot : String
     , dev : String
-    , devAssets : String
+    , devRoot : String
+    , assetsDevTarget : String
     , ignoredByGit : String
     , pw : String
     , src : String
     , temp : String
     , assets : String
-    , assetsDev : String
+    , assetsDevSource : String
     , elmStartSrc : String
+    , relative : String
     }
+
+
+relativeFromFlags : { a | homepage : String } -> String
+relativeFromFlags flags =
+    flags.homepage
+        |> Url.fromString
+        |> Maybe.map .path
+        |> Maybe.withDefault ""
+        |> (\relative ->
+                if relative == "/" then
+                    ""
+
+                else
+                    relative
+           )
 
 
 dir : Flags -> Dir
 dir flags =
+    let
+        relative =
+            relativeFromFlags flags
+
+        devRoot =
+            flags.dirIgnoredByGit ++ "/dev"
+
+        buildRoot =
+            flags.dirIgnoredByGit ++ "/build"
+    in
     { pw = flags.dirPw
     , bin = flags.dirBin
     , temp = flags.dirTemp
     , src = flags.dirPw ++ "/src"
     , elmStartSrc = flags.dirPw ++ "/src-elm-starter"
+    , relative = relative
 
     -- Assets
     , assets = flags.dirPw ++ "/assets/prod"
-    , assetsDev = flags.dirPw ++ "/assets/dev"
+    , assetsDevSource = flags.dirPw ++ "/assets/dev"
 
     -- Working dir
     , ignoredByGit = flags.dirIgnoredByGit
-    , dev = flags.dirIgnoredByGit ++ "/dev"
-    , devAssets = flags.dirIgnoredByGit ++ "/dev/assets-dev"
-    , build = flags.dirIgnoredByGit ++ "/build"
+    , devRoot = devRoot
+    , dev = devRoot ++ relative
+    , assetsDevTarget = devRoot ++ relative ++ "/assets-dev"
+    , buildRoot = buildRoot
+    , build = buildRoot ++ relative
     }
 
 
@@ -171,16 +204,19 @@ dirEncoder dir_ =
         , ( "temp", Json.Encode.string dir_.temp )
         , ( "src", Json.Encode.string dir_.src )
         , ( "elmStartSrc", Json.Encode.string dir_.elmStartSrc )
+        , ( "relative", Json.Encode.string dir_.relative )
 
         -- Assets
         , ( "assets", Json.Encode.string dir_.assets )
-        , ( "assetsDev", Json.Encode.string dir_.assetsDev )
+        , ( "assetsDevSource", Json.Encode.string dir_.assetsDevSource )
 
         -- Working dir
         , ( "ignoredByGit", Json.Encode.string dir_.ignoredByGit )
         , ( "dev", Json.Encode.string dir_.dev )
-        , ( "devAssets", Json.Encode.string dir_.devAssets )
+        , ( "devRoot", Json.Encode.string dir_.devRoot )
+        , ( "assetsDevTarget", Json.Encode.string dir_.assetsDevTarget )
         , ( "build", Json.Encode.string dir_.build )
+        , ( "buildRoot", Json.Encode.string dir_.buildRoot )
         ]
 
 

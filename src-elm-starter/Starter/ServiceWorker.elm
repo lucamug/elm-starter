@@ -24,16 +24,16 @@ encoderCacheableUrls obj =
         ]
 
 
-precacheFiles : String
-precacheFiles =
-    Starter.Cache.stuffToCache
+precacheFiles : String -> String
+precacheFiles relative =
+    Starter.Cache.stuffToCache relative
         |> List.map (\url -> { url = url, revision = Just 1 })
         |> Json.Encode.list encoderCacheableUrls
         |> Json.Encode.encode 4
 
 
-serviceWorker : String
-serviceWorker =
+serviceWorker : String -> String
+serviceWorker relative =
     """/* """
         ++ Starter.ConfMeta.conf.messageDoNotEditDisclaimer
         ++ """ */
@@ -55,7 +55,7 @@ const precacheAndRoute = workbox.precaching.precacheAndRoute;
 // https://developers.google.com/web/tools/workbox/guides/precache-files
 precacheAndRoute( 
 """
-        ++ precacheFiles
+        ++ precacheFiles relative
         ++ """
 );
 

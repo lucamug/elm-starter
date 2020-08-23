@@ -32,7 +32,7 @@ metaInfoData flags =
 
 signature : String
 signature =
-    selfInvoking """
+    selfInvoking <| """
 var color =
     { default: "background: #eee; color: gray; font-family: monospace"
     , love: "background: red; color: #eee"
@@ -58,17 +58,17 @@ console.info
     );"""
 
 
-registerServiceWorker : String
-registerServiceWorker =
-    selfInvoking """
+registerServiceWorker : String -> String
+registerServiceWorker relative =
+    selfInvoking <| """
 // From https://developers.google.com/web/tools/workbox/guides/get-started
-if (location.hostname === "localhost" && location.port === "8000") {
+if (location.hostname === "localhost") {
     console.log("NOT loading the service worker in development");
 } else {
     if ('serviceWorker' in navigator) {
         // Use the window load event to keep the page load performant
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+            navigator.serviceWorker.register('""" ++ relative ++ """/service-worker.js').then(function(registration) {
                 // Registration was successful
             }, function(err) {
                 // registration failed :(
@@ -119,6 +119,7 @@ portPushUrl =
 if (ElmApp && ElmApp.ports && ElmApp.ports.pushUrl) {
     ElmApp.ports.pushUrl.subscribe(function(url) {
         history.pushState({}, '', url);
+        window.scrollTo(0, 0);
         if (ElmApp && ElmApp.ports && ElmApp.ports.onUrlChange) {
             ElmApp.ports.onUrlChange.send(location.href);
         }

@@ -74,6 +74,10 @@ conf flags =
 
 encoder : Conf msg -> Json.Encode.Value
 encoder args =
+    let
+        relative =
+            .relative (Starter.Flags.dir args.flags)
+    in
     Json.Encode.object
         [ ( "dir"
           , args.dir
@@ -85,12 +89,14 @@ encoder args =
           )
         , ( "serverDev"
           , { elmFileToCompile = .mainElm (Starter.Flags.file args.flags)
-            , dir = .dev (Starter.Flags.dir args.flags)
+            , dir = .devRoot (Starter.Flags.dir args.flags)
             , outputCompiledJs = .dev (Starter.Flags.dir args.flags) ++ args.fileNames.outputCompiledJs
-            , indexHtml = args.fileNames.indexHtml
+            , indexHtml = relative ++ args.fileNames.indexHtml
+            , relative = relative
             , port_ = args.portDev
             , compilation = Starter.ElmLive.Debug
             , verbose = Starter.ElmLive.VerboseNo
+            , pushstate = Starter.ElmLive.PushstateYes
             , reload = Starter.ElmLive.ReloadYes
             , hotReload = Starter.ElmLive.HotReloadYes
             , dirBin = .bin (Starter.Flags.dir args.flags)
@@ -100,12 +106,14 @@ encoder args =
           )
         , ( "serverStatic"
           , { elmFileToCompile = .mainElm (Starter.Flags.file args.flags)
-            , dir = .dev (Starter.Flags.dir args.flags)
+            , dir = .devRoot (Starter.Flags.dir args.flags)
             , outputCompiledJs = .dev (Starter.Flags.dir args.flags) ++ args.fileNames.outputCompiledJs
-            , indexHtml = args.fileNames.indexHtml
+            , indexHtml = relative ++ args.fileNames.indexHtml
+            , relative = relative
             , port_ = args.portStatic
             , compilation = Starter.ElmLive.Optimize
             , verbose = Starter.ElmLive.VerboseNo
+            , pushstate = Starter.ElmLive.PushstateYes
             , reload = Starter.ElmLive.ReloadNo
             , hotReload = Starter.ElmLive.HotReloadNo
             , dirBin = .bin (Starter.Flags.dir args.flags)
@@ -115,12 +123,14 @@ encoder args =
           )
         , ( "serverBuild"
           , { elmFileToCompile = .mainElm (Starter.Flags.file args.flags)
-            , dir = .build (Starter.Flags.dir args.flags)
+            , dir = .buildRoot (Starter.Flags.dir args.flags)
             , outputCompiledJs = .dev (Starter.Flags.dir args.flags) ++ args.fileNames.outputCompiledJs
             , indexHtml = args.fileNames.indexHtml
+            , relative = relative
             , port_ = args.portBuild
             , compilation = Starter.ElmLive.Normal
             , verbose = Starter.ElmLive.VerboseNo
+            , pushstate = Starter.ElmLive.PushstateNo
             , reload = Starter.ElmLive.ReloadNo
             , hotReload = Starter.ElmLive.HotReloadNo
             , dirBin = .bin (Starter.Flags.dir args.flags)
@@ -158,7 +168,7 @@ encoder args =
                     , name = args.flags.name
                     , nameLong = args.flags.nameLong
                     }
-                        |> Starter.Manifest.manifest
+                        |> Starter.Manifest.manifest relative
                         |> Json.Encode.encode Starter.ConfMeta.conf.indentation
                   )
 
@@ -166,14 +176,13 @@ encoder args =
                 --
                 -- Netlify Configuration File
                 --
-                , ( args.fileNames.redirects
-                  , "/* /index.html 200"
-                  )
-
+                -- , ( args.fileNames.redirects
+                --   , "/* /index.html 200"
+                --   )
                 -- "/service-worker.js"
                 --
                 , ( args.fileNames.serviceWorker
-                  , Starter.ServiceWorker.serviceWorker
+                  , Starter.ServiceWorker.serviceWorker relative
                   )
 
                 -- "/index.html"
@@ -197,7 +206,7 @@ encoder args =
                 -- "/sitemap.txt"
                 --
                 , ( args.fileNames.sitemap
-                  , String.join "\n" <| List.map (\url -> args.flags.homepage ++ url) Main.conf.urls
+                  , String.join "\n" <| List.map (\url -> String.replace relative "" args.flags.homepage ++ url) Main.conf.urls
                   )
                 ]
           )

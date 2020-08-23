@@ -27,8 +27,8 @@ import Starter.SnippetCss
 -- pwa : List (Html msg)
 
 
-pwa : String -> List (Html msg)
-pwa themeColor =
+pwa : String -> String -> List (Html msg)
+pwa relative themeColor =
     -- DNS preconnect and prefetch for
     -- https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js
     [ link [ rel "preconnect", href "https://storage.googleapis.com", crossorigin "true" ] []
@@ -37,7 +37,7 @@ pwa themeColor =
     -- PWA
     , meta [ name "theme-color", content themeColor ] []
     , meta [ name "mobile-web-app-capable", content "yes" ] []
-    , link [ rel "manifest", href Starter.ConfMeta.conf.fileNames.manifestJson ] []
+    , link [ rel "manifest", href (relative ++ Starter.ConfMeta.conf.fileNames.manifestJson) ] []
 
     -- iOS
     , meta [ name "apple-mobile-web-app-capable", content "yes" ] []
@@ -63,12 +63,16 @@ previewCards flags mainConf =
     -- From https://medium.com/slack-developer-blog/everything-you-ever-wanted-to-know-about-unfurling-but-were-afraid-to-ask-or-how-to-make-your-e64b4bb9254
     --
     -- facebook open graph tags
+    let
+        relative =
+            Starter.Flags.relativeFromFlags flags
+    in
     []
         ++ [ meta [ property_ "og:type", content "website" ] []
            , meta [ property_ "og:url", content flags.homepage ] []
            , meta [ property_ "og:title", content flags.nameLong ] []
            , meta [ property_ "og:description", content flags.description ] []
-           , meta [ property_ "og:image", content Starter.ConfMeta.conf.fileNames.snapshot ] []
+           , meta [ property_ "og:image", content (relative ++ Starter.ConfMeta.conf.fileNames.snapshot) ] []
 
            -- twitter card tags additive with the og: tags
            , meta [ name "twitter:card", content "summary_large_image" ] []
@@ -90,7 +94,7 @@ previewCards flags mainConf =
         ++ [ meta [ name "twitter:domain", value flags.homepage ] []
            , meta [ name "twitter:title", value flags.nameLong ] []
            , meta [ name "twitter:description", value flags.description ] []
-           , meta [ name "twitter:image", content Starter.ConfMeta.conf.fileNames.snapshot ] []
+           , meta [ name "twitter:image", content (relative ++ Starter.ConfMeta.conf.fileNames.snapshot) ] []
            , meta [ name "twitter:url", value flags.homepage ] []
 
            -- , meta [ name "twitter:label1", value "Opens in Theaters" ] []
@@ -100,10 +104,11 @@ previewCards flags mainConf =
            ]
 
 
-prettyConsoleFormatting : String -> List (Html msg)
-prettyConsoleFormatting env =
+prettyConsoleFormatting : String -> String -> List (Html msg)
+prettyConsoleFormatting relative env =
     if env == "dev" then
-        [ script [ src "/assets-dev/elm-console-debug.js" ] []
+        -- TODO - Add the right path here
+        [ script [ src (relative ++ "/assets-dev/elm-console-debug.js") ] []
         , script [] [ textUnescaped "ElmConsoleDebug.register()" ]
         ]
 

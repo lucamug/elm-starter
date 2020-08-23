@@ -18,7 +18,7 @@ These are three simple examples of websites built with `elm-starter`:
 * [https://elm-physics-example.guupa.com/](https://elm-physics-example.guupa.com/) ([Code](https://github.com/lucamug/elm-physics-example))
 
 ![Collection of examples](assets/dev/collection.png)
-![elm-physics-example](assets/dev/elm-physics-example.png)
+![elm-physics-example](assets/dev/elm-physics-example.gif)
 
 ## Characteristics
 
@@ -36,6 +36,7 @@ These are three simple examples of websites built with `elm-starter`:
 * Hopefully relatively simple to use and maintain
 * Non invasive (you can easily add/remove it)
 * Works with Netlify, Surge, etc.
+* Supports websites living in subfolder
 
 Lighthouse report:
 
@@ -314,6 +315,46 @@ This data is also available in Elm through Flags.
 ### `Elm`
 
 This is the object exposed by the compiler used to initialize the application.
+
+## Website living in subfolder
+
+If your website need to live in a subfolder, including all the assets, simply specify the subfolder in `homepage` of `package.json`.
+
+```
+    "homepage": "https://example.com/your/sub/folders",
+```
+
+This will adjust all the links for you automatically. So for example, `elm.js` instead being loaded as
+
+```
+<script src="/elm.js"></script>
+```
+
+It will be loaded as
+
+```
+<script src="/your/sub/folders/elm.js"></script>
+```
+
+Remember to account for these extra folders in your Elm route parser.
+
+## Extra commands
+
+To avoid possible conflicts with other commands in `package.json`, al commands are also available with a prefix:
+
+```
+$ npm run elm-starter:boot
+$ npm run elm-starter:start
+$ npm run elm-starter:generateDevFiles
+$ npm run elm-starter:build
+$ npm run elm-starter:buildExpectingTheServerRunning
+$ npm run elm-starter:serverBuild
+$ npm run elm-starter:serverDev
+$ npm run elm-starter:serverStatic
+$ npm run elm-starter:watchStartElm
+```
+
+This list also include extra commands that can be useful for debugging
 
 ## Limitations
 

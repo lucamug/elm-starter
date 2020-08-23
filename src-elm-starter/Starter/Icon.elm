@@ -15,10 +15,10 @@ iconsToBeCached =
     [ 16, 32, 64 ] ++ iconsForManifest
 
 
-iconFileName : Int -> String
-iconFileName size =
+iconFileName : String -> Int -> String
+iconFileName relative size =
     let
         sizeString =
             String.fromInt size
     in
-    "/icons/" ++ sizeString ++ ".png"
+    relative ++ "/icons/" ++ sizeString ++ ".png"

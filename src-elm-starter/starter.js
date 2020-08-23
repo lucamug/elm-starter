@@ -144,7 +144,7 @@ function bootstrap (env, callback) {
                 , description : String(package.description)
                 , author : String(package.author)
                 , version : String(package.version)
-                , homepage : String(package.homepage)
+                , homepage : String(package.homepage).replace(/[/]*$/g, "") // Remove trayling "/"
                 , license : String(package.license)
                 , twitterSite : typeof package.twitterSite === "undefined"? null : String(package.twitterSite)
                 , twitterAuthor : typeof package.twitterAuthor === "undefined"? null : String(package.twitterAuthor)
@@ -196,15 +196,15 @@ function command_start (conf) {
 }
 
 function command_generateDevFiles (conf) {
-    removeDir(conf.dir.dev, false);
+    removeDir(conf.dir.devRoot, false);
     mkdir(conf.dir.dev);
-    mkdir(conf.dir.devAssets);
+    mkdir(conf.dir.assetsDevTarget);
     generateFiles(conf, conf.dir.dev);
     // We symlink all assets from `assets` folder to `dev` folder
     // so that in development, changes to the assets are immediately
     // reflected. During the build instead we phisically copy files.
     symlinkDir(conf.dir.assets, conf.dir.dev);
-    symlinkDir(conf.dir.assetsDev, conf.dir.devAssets);
+    symlinkDir(conf.dir.assetsDevSource, conf.dir.assetsDevTarget);
     // Touching Main.elm so that, in case there is a server running,
     // it will re-generate elm.js
     child_process.exec(`touch ${conf.file.mainElm}`, (error, out) => {});
@@ -223,7 +223,7 @@ function command_build (conf) {
 }
 
 function command_buildExpectingTheServerRunning (conf) {
-    removeDir(conf.dir.build, false);
+    removeDir(conf.dir.buildRoot, false);
     mkdir(conf.dir.build);
     generateFiles(conf, conf.dir.build);
     console.log(styleSubtitle, `Compiling Elm`);
@@ -280,7 +280,11 @@ function command_watchStartElm (conf) {
 async function generateStaticPages (conf) {
     try {
         console.log(styleSubtitle, `Building ${conf.mainConf.urls.length} static pages for ${conf.mainConf.domain}`);
-        const browser = await puppeteer.launch({ headless: conf.headless });
+        // the `args` property is only necessary during docker build. if its not fine to keep this here, please make configurable.
+        const browser = await puppeteer.launch({
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+            headless: conf.headless
+        });
         const urlsInBatches = chunkArray(conf.mainConf.urls, conf.batchesSize);
         await urlsInBatches.reduce(async (previousBatch, currentBatch, index) => {
             await previousBatch;
@@ -300,8 +304,8 @@ async function processUrl (url, browser, conf) {
     const page = await browser.newPage();
     await page.setViewport({width: conf.snapshotWidth, height: conf.snapshotHeight});
     await page.goto(`${conf.startingDomain}${url}`, {waitUntil: 'networkidle0'});
-    if ( !fs.existsSync( `${conf.dir.build}${url}` ) ) {
-        mkdir( `${conf.dir.build}${url}` );
+    if ( !fs.existsSync( `${conf.dir.buildRoot}${url}` ) ) {
+        mkdir( `${conf.dir.buildRoot}${url}` );
     }
     let html = await page.content();
     html = html.replace('</body>',`${conf.htmlToReinject}</body>`);
@@ -312,10 +316,10 @@ async function processUrl (url, browser, conf) {
         , removeComments: true
         }
     );
-    fs.writeFileSync(`${conf.dir.build}${url}/${conf.pagesName}`, minHtml);
+    fs.writeFileSync(`${conf.dir.buildRoot}${url}/${conf.pagesName}`, minHtml);
     if (conf.snapshots) {
         await page.screenshot(
-            { path: `${conf.dir.build}${url}/${conf.snapshotFileName}`
+            { path: `${conf.dir.buildRoot}${url}/${conf.snapshotFileName}`
             , quality: conf.snapshotsQuality
             }
         );
