@@ -94,7 +94,7 @@ if (arg === "boot") {
     bootstrap(DEV, command_serverDev);
 
 } else if (arg === "serverStatic" ) {
-    console.log(styleTitle, `Starting server "static" for genoneration of static pages...`);
+    console.log(styleTitle, `Starting server "static" for generation of static pages...`);
     bootstrap(PROD, command_serverStatic);
 
 } else if (arg === "watchStartElm" ) {
