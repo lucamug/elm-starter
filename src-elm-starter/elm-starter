@@ -149,7 +149,7 @@ if (command === "boot") {
     bootstrap(DEV, command_serverDev);
 
 } else if (command === "serverStatic" ) {
-    console.log(styleTitle, `Starting server "static" for genoneration of static pages...`);
+    console.log(styleTitle, `Starting server "static" for generation of static pages...`);
     bootstrap(PROD, command_serverStatic);
 
 } else if (command === "watchStartElm" ) {

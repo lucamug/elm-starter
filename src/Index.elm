@@ -71,7 +71,6 @@ index flags =
                 -- Activating the "Loading..." message
                 ++ Starter.SnippetHtml.messageLoadingOn
                 -- Loading Elm code
-                -- Loading Elm code
                 ++ [ script [ src (relative ++ fileNames.outputCompiledJsProd) ] [] ]
                 -- Elm finished to load, de-activating the "Loading..." message
                 ++ Starter.SnippetHtml.messageLoadingOff
