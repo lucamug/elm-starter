@@ -4,6 +4,7 @@ import Html.String exposing (..)
 import Html.String.Attributes exposing (..)
 import Html.String.Extra exposing (..)
 import Main
+import Starter.FileNames
 import Starter.Flags
 import Starter.Icon
 import Starter.SnippetHtml
@@ -15,6 +16,9 @@ index flags =
     let
         relative =
             Starter.Flags.toRelative flags
+
+        fileNames =
+            Starter.FileNames.fileNames flags.version flags.commit
     in
     html
         [ lang "en" ]
@@ -67,7 +71,8 @@ index flags =
                 -- Activating the "Loading..." message
                 ++ Starter.SnippetHtml.messageLoadingOn
                 -- Loading Elm code
-                ++ [ script [ src (relative ++ "/elm.js") ] [] ]
+                -- Loading Elm code
+                ++ [ script [ src (relative ++ fileNames.outputCompiledJsProd) ] [] ]
                 -- Elm finished to load, de-activating the "Loading..." message
                 ++ Starter.SnippetHtml.messageLoadingOff
                 -- Loading utility for pretty console formatting

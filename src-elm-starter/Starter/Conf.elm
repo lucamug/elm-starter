@@ -96,7 +96,7 @@ encoder conf =
         , ( "serverDev"
           , { elmFileToCompile = .mainElm (Starter.Flags.file conf.flags)
             , dir = .devRoot (Starter.Flags.dir conf.flags)
-            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJs
+            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJsProd
             , indexHtml = relative ++ conf.fileNames.indexHtml
             , relative = relative
             , port_ = conf.portDev
@@ -115,7 +115,7 @@ encoder conf =
         , ( "serverStatic"
           , { elmFileToCompile = .mainElm (Starter.Flags.file conf.flags)
             , dir = .devRoot (Starter.Flags.dir conf.flags)
-            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJs
+            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJsProd
             , indexHtml = relative ++ conf.fileNames.indexHtml
             , relative = relative
             , port_ = conf.portStatic
@@ -134,7 +134,7 @@ encoder conf =
         , ( "serverBuild"
           , { elmFileToCompile = .mainElm (Starter.Flags.file conf.flags)
             , dir = .buildRoot (Starter.Flags.dir conf.flags)
-            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJs
+            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJsProd
             , indexHtml = conf.fileNames.indexHtml
             , relative = relative
             , port_ = conf.portBuild

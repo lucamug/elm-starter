@@ -1,5 +1,5 @@
 {
-    "version": "0.0.8",
+    "version": "0.0.9",
     "name": "elm-starter",
     "nameLong": "elm-starter - An Elm-based bootstrapper for Elm applications",
     "description": "An Elm-based light way to setup a fully fledged Elm PWA.",
