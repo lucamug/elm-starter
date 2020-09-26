@@ -200,6 +200,32 @@ When setting up the app with Netlify, input these in the deploy configuration:
 * Build command: `npm run build` (or `node ./src-elm-starter/starter.js start`)
 * Publish directory: `elm-stuff/elm-starter-files/build`
 
+## Other CI/CD platforms
+
+There are cases where some CI process is not able to install and use Puppeteer properly.
+
+One of these cases was solved installing chromium manually running
+
+`RUN apk update && apk add --no-cache bash chromium`
+
+Then setting up some environment variables:
+
+
+```
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+```
+
+Then extra paramater were added to `elm-starter`
+
+```
+--no-sandbox
+--disable-setuid-sandbox
+--disable-dev-shm-usage
+```
+
+More info at https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-on-alpine
+
 ## (\*) Applications working without Javascript
 
 Working without Javascript depends on the application. The `elm-starter` example works completely fine also without Javascript, the only missing thing is the smooth transition between pages.
@@ -366,6 +392,48 @@ Note
 
 * The smooth rotational transition in the demo only works in Chrome. I realized it too late, but you get the picture
 
+## How does it work internally
+
+
+### Command `start`
+
+    * [function bootstrap]
+        * Set initial values for some folder and file names
+        * Compile `Worker.elm`
+        * Execute `Worker.elm` using data set initially and other data coming from `package.json` and command line options
+        * `Worker.elm` generates a configuration file that will be used for the next tasks. A copy of it is accessible at http://localhost:8000/conf.json
+    * [function command_start]
+        * [function command_generateDevFiles]
+            * Clean the `developmennt` working folder
+            * Generate files as per `conf.json` and also copy over assets
+            * Touch `src/Main.elm` so that `elm-live` recompile and the browser refresh
+        * Starts two commands: `serverDev` and `watchStartElm` (see below)
+            
+
+
+### Command `serverDev`
+
+    * [function bootstrap] (see above)
+    * [function command_serverDev]
+        * start `elm-live` at http://localhost:8000
+
+
+
+### Command `watchStartElm`
+
+    * [function bootstrap] (see above)
+    * Watch all Elm files in `elm-starter` folder and `src/Index.elm` for modifications
+    * If there is a change, it run the command `generateDevFiles` (see below)
+
+    
+
+### Command `generateDevFiles`
+    * [function bootstrap] (see above)
+    * [function command_generateDevFiles] (see above)
+
+
+..TO BE CONTINUED
+
 ## Non-goals
 
 Things that `elm-starter` is not expected to do
@@ -399,6 +467,7 @@ These are other projects that can be used to bootstrap an Elm application or to 
 * [elm-spa](https://package.elm-lang.org/packages/ryannhg/elm-spa/latest/)
 * [create-elm-app](https://github.com/halfzebra/create-elm-app)
 * [spades](https://github.com/rogeriochaves/spades)
+* [gulp-elm-starter-project](https://github.com/Chadtech/gulp-elm-starter-project)
 
 Here are similar projects for other Languages/Frameworks:
 
