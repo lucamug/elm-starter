@@ -2,6 +2,7 @@
 const debugMode = false;
 const fs = require("fs");
 const path = require('path');
+const crypto = require('crypto');
 const terser = require("terser");
 const puppeteer = require('puppeteer');
 const concurrently = require('concurrently');
@@ -23,22 +24,67 @@ const styleWarning = `    ${fgRed}Warning:${reset} %s`;
 const arg = process.argv[2] ? process.argv[2] : "";
 const DEV = "dev";
 const PROD = "prod";
-const NOT_AVAILABLE = "N/A";
+const NOT_AVAILABLE = "na";
 let commit; 
 let branch;
 
-try {
-    commit = child_process.execSync('git rev-parse --short HEAD').toString().replace(/^\s+|\s+$/g, '');
-} catch(err) {
-    console.log(styleWarning, `Make this a git repository so we can add the commit info.`);
-    commit = `commit ${NOT_AVAILABLE}`;
+var argv = require('yargs')
+    .usage('Usage: $0 <command> [options]')
+    .command('start', 'Start the development environment, open http://localhost:8000 and edit src/Main.elm')
+    .command('build', 'Build all the files for production in elm-stuff/elm-starter-files/build')
+    .command('serverBuild', 'A simple way to test the build. Open http://localhost:9000')
+    .command('generateDevFiles', 'INTERNAL - Prepare all the file for development')
+    .command('buildUsingServer', 'INTERNAL - Build all the file for production. It expects serverStatic running')
+    .command('serverDev', 'INTERNAL - Start the server used for development')
+    .command('serverStatic', 'INTERNAL - Start the server used to generate the build at http://localhost:7000')
+    .command('watchStartElm', 'INTERNAL - Watch some extra file during the development')
+    .command('debug', 'INTERNAL - Display the configuration')
+    .command('listResources', 'INTERNAL')
+    .demandCommand(1)
+    .strict()
+    .option('a', {
+        alias: 'assets',
+        default: 'assets/prod',
+        describe: 'assets folder',
+        type: 'string'
+    })    .example('$0 start', 'Start')
+    .alias('b', 'branch')
+    .alias('c', 'commit')
+    .alias('v', 'version')
+    .nargs('b', 1)
+    .nargs('c', 1)
+    .describe('b', 'GIT branch name. If not given, the script try to extract it automatically')
+    .describe('c', 'GIT commit hash. If not given, the script try to extract it automatically')
+    .help('h')
+    .alias('h', 'help')
+    .epilog('copyright 2020')
+    .argv;
+
+// console.log(argv);
+// process.exit(1);
+    
+const command = argv['_'][0];
+
+if (argv.commit) {
+    commit = argv.commit;
+} else {
+    try {
+        commit = child_process.execSync('git rev-parse --short HEAD').toString().replace(/^\s+|\s+$/g, '');
+    } catch(err) {
+        console.log(styleWarning, `Next time pass the commit as option or make this a git repository so we can add the commit info.`);
+        commit = `commit-${NOT_AVAILABLE}`;
+    }
 }
 
-try {
-    branch = child_process.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/^\s+|\s+$/g, '');
-} catch(err) {
-    console.log(styleWarning, `Make this a git repository so we can add the branch info.`);
-    branch = `branch ${NOT_AVAILABLE}`;
+if (argv.branch) {
+    branch = argv.branch;
+} else {
+    try {
+        branch = child_process.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/^\s+|\s+$/g, '');
+    } catch(err) {
+        console.log(styleWarning, `Next time pass the branch as option or make make this a git repository so we can add the branch info.`);
+        branch = `branch-${NOT_AVAILABLE}`;
+    }
 }
 
 [ "name"
@@ -58,46 +104,55 @@ function checkRequired(key) {
     }
 }
 
-
 //
 //
 // PARSING ARGUMENTS
 //
 //
 
-if (arg === "boot") {
+if (command === "boot") {
     console.log(styleTitle, `Bootstrapping...`);
     bootstrap(DEV);
 
-} else if (arg === "" || arg === "start") {
+} else if (command === "debug") {
+    console.log(styleTitle, `Starting (${commit}, ${branch})...`);
+    bootstrap(DEV, function(conf) {console.log(conf)});
+
+} else if (command === "listResources") {
+    console.log(styleTitle, `Starting (${commit}, ${branch})...`);
+    bootstrap(DEV, function(conf) {
+        console.log( listFiles(conf.dir.pw + "/assets/prod", []) );
+    });
+
+} else if (command === "start") {
     console.log(styleTitle, `Starting (${commit}, ${branch})...`);
     bootstrap(DEV, command_start);
 
-} else if (arg === "generateDevFiles" ) {
+} else if (command === "generateDevFiles" ) {
     console.log(styleTitle, `Generating dev files...`);
     bootstrap(DEV, command_generateDevFiles);
 
-} else if (arg === "build" ) {
-    console.log(styleTitle, `Building...`);
+} else if (command === "build" ) {
+    console.log(styleTitle, `Building... (${commit} ${branch})`);
     bootstrap(PROD, command_build);
 
-} else if (arg === "buildExpectingTheServerRunning" ) {
+} else if (command === "buildUsingServer" ) {
     console.log(styleTitle, `Building (I expect a server running on port 7000)...`);
-    bootstrap(PROD, command_buildExpectingTheServerRunning);
+    bootstrap(PROD, command_buildUsingServer);
 
-} else if (arg === "serverBuild" ) {
+} else if (command === "serverBuild" ) {
     console.log(styleTitle, `Starting server "build"...`);
     bootstrap(PROD, command_serverBuild);
 
-} else if (arg === "serverDev" ) {
+} else if (command === "serverDev" ) {
     console.log(styleTitle, `Starting server DEV...`);
     bootstrap(DEV, command_serverDev);
 
-} else if (arg === "serverStatic" ) {
+} else if (command === "serverStatic" ) {
     console.log(styleTitle, `Starting server "static" for genoneration of static pages...`);
     bootstrap(PROD, command_serverStatic);
 
-} else if (arg === "watchStartElm" ) {
+} else if (command === "watchStartElm" ) {
     console.log(styleTitle, `Watching elm-starter Elm files...`);
     bootstrap(DEV, command_watchStartElm);
 
@@ -121,6 +176,7 @@ function bootstrap (env, callback) {
         , bin:          `${dirPw}/node_modules/.bin`
         , ignoredByGit: `${dirPw}/${relDirIgnoredByGit}`
         , temp:         `${dirPw}/${relDirIgnoredByGit}/temp`
+        , assets:       `${dirPw}/${argv.assets}`
         }
     const file =
         { elmWorker:    `${dirPw}/src-elm-starter/Worker.elm`
@@ -166,15 +222,17 @@ function bootstrap (env, callback) {
                 , dirBin : dir.bin
                 , dirIgnoredByGit : dir.ignoredByGit
                 , dirTemp : dir.temp
+                , dirAssets : dir.assets
                 , fileElmWorker : file.elmWorker
+                , assets : listFiles(dir.pw + "/assets/prod", [])
                 }
             }
         );
         app.ports.dataFromElmToJavascript.subscribe(function(conf) {
             // Got the file back from Elm!
-            consoleDebug(conf.dir);
-            consoleDebug(conf.file);
+            fs.writeFile(dir.ignoredByGit + "/dev" + "/conf.json", JSON.stringify(conf,null,4), function(){});
             callback(conf);
+            
         });
     });
 }
@@ -188,8 +246,8 @@ function bootstrap (env, callback) {
 function command_start (conf) {
     command_generateDevFiles(conf);
     startCommand(`${conf.dir.bin}/concurrently`,
-        [ `node ${conf.file.jsStarter} serverDev`
-        , `node ${conf.file.jsStarter} watchStartElm`
+        [ `node ${conf.file.jsStarter} serverDev --branch=${branch} --commit=${commit}`
+        , `node ${conf.file.jsStarter} watchStartElm --branch=${branch} --commit=${commit}`
         , `--kill-others`
         ]
     );
@@ -212,26 +270,26 @@ function command_generateDevFiles (conf) {
 
 function command_build (conf) {
     startCommand(`${conf.dir.bin}/concurrently`,
-        [ `node ${conf.file.jsStarter} serverStatic`
+        [ `node ${conf.file.jsStarter} serverStatic --branch=${branch} --commit=${commit}`
         // Here we wait two seconds so that the server has time to
         // compile Elm code and start itself
-        , `sleep 2 && node ${conf.file.jsStarter} buildExpectingTheServerRunning`
+        , `sleep 2 && node ${conf.file.jsStarter} buildUsingServer --branch=${branch} --commit=${commit}`
         , `--kill-others`
         , `--success=first`
         ]
     );
 }
 
-function command_buildExpectingTheServerRunning (conf) {
+function command_buildUsingServer (conf) {
     removeDir(conf.dir.buildRoot, false);
     mkdir(conf.dir.build);
     generateFiles(conf, conf.dir.build);
     console.log(styleSubtitle, `Compiling Elm`);
-    const command = `${conf.dir.bin}/elm make ${conf.file.mainElm} --output=${conf.dir.build}/elm.js --optimize`;
+    const command = `${conf.dir.bin}/elm make ${conf.file.mainElm} --output=${conf.dir.build}/${conf.outputCompiledJsProd} --optimize`;
     child_process.exec(command, (error, out) => {
         if (error) throw error;
         // Going back to the original directory
-        minifyJs(conf, `elm.js`);
+        minifyJs(conf, `${conf.outputCompiledJsProd}`);
         console.log(styleSubtitle, `Copying assets`);
         copyDir(conf.dir.assets, conf.dir.build);
         generateStaticPages(conf);
@@ -266,7 +324,7 @@ function command_watchStartElm (conf) {
         [ conf.dir.elmStartSrc
         , conf.file.indexElm
         , `-c`
-        , `node ${conf.file.jsStarter} generateDevFiles`
+        , `node ${conf.file.jsStarter} generateDevFiles --branch=${branch} --commit=${commit}`
         ]
     );
 }
@@ -316,6 +374,7 @@ async function processUrl (url, browser, conf) {
         , removeComments: true
         }
     );
+    
     fs.writeFileSync(`${conf.dir.buildRoot}${url}/${conf.pagesName}`, minHtml);
     if (conf.snapshots) {
         await page.screenshot(
@@ -416,6 +475,7 @@ function mkdir (path) {
 function symlinkDir (srcDir, dstDir) {
     if (!fs.existsSync(srcDir)) {
         // source directory doesn't exists
+        console.log("!!!");
         return;
     }
     const list = fs.readdirSync(srcDir);
@@ -474,3 +534,25 @@ function removeDir (srcDir, removeSelf) {
         fs.rmdirSync(srcDir);
     }
 };
+
+function listFiles (srcDir, acc) {
+    if (!fs.existsSync(srcDir)) {
+        // source directory doesn't exists
+        return(acc);
+    } else {
+        const files = fs.readdirSync(srcDir);
+        files.map( function (file) {
+            const src = `${srcDir}/${file}`;
+            const stat = fs.lstatSync(src);
+            if (stat && stat.isDirectory()) {
+                acc = listFiles(src, acc);
+            } else if ( file !== ".DS_Store" ) {
+                const filePath = srcDir + "/" + file
+                const fileData = fs.readFileSync(filePath, 'utf8');
+                const hash = crypto.createHash('sha1').update(fileData, 'utf8').digest('hex');
+                acc.push([filePath, hash]);
+            }
+        });
+        return(acc);
+    }
+}

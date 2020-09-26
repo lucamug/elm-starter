@@ -14,7 +14,7 @@ index : Starter.Flags.Flags -> Html msg
 index flags =
     let
         relative =
-            Starter.Flags.relativeFromFlags flags
+            Starter.Flags.toRelative flags
     in
     html
         [ lang "en" ]
@@ -32,14 +32,24 @@ index flags =
                    , style_ []
                         [ text <| """
                             body 
-                                { background-color: """ ++ Starter.Flags.flagsToThemeColor flags ++ """
+                                { background-color: """ ++ Starter.Flags.toThemeColor flags ++ """
                                 ; font-family: 'IBM Plex Sans', helvetica, sans-serif
                                 ; margin: 0px;
                                 }""" ]
                    ]
                 ++ Starter.SnippetHtml.messagesStyle
-                ++ Starter.SnippetHtml.pwa relative (Starter.Flags.flagsToThemeColor flags)
-                ++ Starter.SnippetHtml.previewCards flags Main.conf
+                ++ Starter.SnippetHtml.pwa
+                    { commit = flags.commit
+                    , relative = relative
+                    , themeColor = Starter.Flags.toThemeColor flags
+                    , version = flags.version
+                    }
+                ++ Starter.SnippetHtml.previewCards
+                    { commit = flags.commit
+                    , flags = flags
+                    , mainConf = Main.conf
+                    , version = flags.version
+                    }
             )
         , body []
             ([]

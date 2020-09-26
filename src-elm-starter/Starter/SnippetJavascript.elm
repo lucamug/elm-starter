@@ -27,7 +27,7 @@ metaInfo flags =
 metaInfoData : Starter.Flags.Flags -> String
 metaInfoData flags =
     Json.Encode.encode 4 <|
-        Starter.Flags.flagsEncoder flags
+        Starter.Flags.encoder flags
 
 
 signature : String

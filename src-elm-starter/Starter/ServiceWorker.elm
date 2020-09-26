@@ -9,35 +9,39 @@ import Starter.Cache
 import Starter.ConfMeta
 
 
-encoderCacheableUrls : { a | revision : Maybe Int, url : String } -> Json.Encode.Value
+encoderCacheableUrls : { a | revision : String, url : String } -> Json.Encode.Value
 encoderCacheableUrls obj =
     Json.Encode.object
         [ ( "url", Json.Encode.string obj.url )
-        , ( "revision"
-          , case obj.revision of
-                Just revision ->
-                    Json.Encode.string (String.fromInt revision)
-
-                Nothing ->
-                    Json.Encode.null
-          )
+        , ( "revision", Json.Encode.string obj.revision )
         ]
 
 
-precacheFiles : String -> String
-precacheFiles relative =
-    Starter.Cache.stuffToCache relative
-        |> List.map (\url -> { url = url, revision = Just 1 })
+precacheFiles :
+    { assets : List ( String, String )
+    , commit : String
+    , relative : String
+    , version : String
+    }
+    -> String
+precacheFiles { relative, version, commit, assets } =
+    Starter.Cache.stuffToCache relative version commit assets
+        |> List.map (\( url, revision ) -> { url = url, revision = revision })
         |> Json.Encode.list encoderCacheableUrls
         |> Json.Encode.encode 4
 
 
-serviceWorker : String -> String
-serviceWorker relative =
-    """/* """
-        ++ Starter.ConfMeta.conf.messageDoNotEditDisclaimer
-        ++ """ */
-
+serviceWorker :
+    { assets : List ( String, String )
+    , commit : String
+    , relative : String
+    , version : String
+    }
+    -> String
+serviceWorker { relative, version, commit, assets } =
+    "// "
+        ++ Starter.ConfMeta.confMeta.messageDoNotEditDisclaimer
+        ++ """
 //
 // This is implemented using Workbox
 // https://developers.google.com/web/tools/workbox
@@ -55,7 +59,12 @@ const precacheAndRoute = workbox.precaching.precacheAndRoute;
 // https://developers.google.com/web/tools/workbox/guides/precache-files
 precacheAndRoute( 
 """
-        ++ precacheFiles relative
+        ++ precacheFiles
+            { assets = assets
+            , commit = commit
+            , relative = relative
+            , version = version
+            }
         ++ """
 );
 
@@ -65,7 +74,7 @@ registerRoute(
 );
 
 registerRoute(
-    // Cache style resources, i.e. CSS files.
+    // Cache style assets, i.e. CSS files.
     ({request}) => request.destination === 'style',
     // Use cache but update in the background.
     new StaleWhileRevalidate({

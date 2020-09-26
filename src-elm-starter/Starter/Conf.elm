@@ -1,6 +1,6 @@
 module Starter.Conf exposing
     ( Conf
-    , conf
+    , conf_
     )
 
 import Html.String
@@ -11,6 +11,7 @@ import Main
 import Starter.ConfMain
 import Starter.ConfMeta
 import Starter.ElmLive
+import Starter.FileNames
 import Starter.Flags
 import Starter.Icon
 import Starter.Manifest
@@ -43,7 +44,7 @@ fileIndexHtml messageDoNotEditDisclaimer indentation startingPage =
 type alias Conf msg =
     { dir : Starter.Flags.Dir
     , file : Starter.Flags.File
-    , fileNames : Starter.ConfMeta.FileNames
+    , fileNames : Starter.FileNames.FileNames
     , fileIndexHtml : Html.String.Html msg
     , htmlToReinject : List (Html.String.Html msg)
     , iconsForManifest : List Int
@@ -55,85 +56,96 @@ type alias Conf msg =
     }
 
 
-conf : Starter.Flags.Flags -> Json.Encode.Value
-conf flags =
+conf_ : Starter.Flags.Flags -> Json.Encode.Value
+conf_ flags =
     encoder
         { dir = Starter.Flags.dir flags
         , file = Starter.Flags.file flags
-        , fileNames = Starter.ConfMeta.conf.fileNames
+        , fileNames = Starter.FileNames.fileNames flags.version flags.commit
         , fileIndexHtml = Index.index flags
         , htmlToReinject = Index.htmlToReinject flags
         , iconsForManifest = Starter.Icon.iconsForManifest
-        , portBuild = Starter.ConfMeta.conf.portBuild
-        , portDev = Starter.ConfMeta.conf.portDev
-        , portStatic = Starter.ConfMeta.conf.portStatic
-        , messageDoNotEditDisclaimer = Starter.ConfMeta.conf.messageDoNotEditDisclaimer
+        , portBuild = Starter.ConfMeta.confMeta.portBuild
+        , portDev = Starter.ConfMeta.confMeta.portDev
+        , portStatic = Starter.ConfMeta.confMeta.portStatic
+        , messageDoNotEditDisclaimer = Starter.ConfMeta.confMeta.messageDoNotEditDisclaimer
         , flags = flags
         }
 
 
 encoder : Conf msg -> Json.Encode.Value
-encoder args =
+encoder conf =
     let
         relative =
-            .relative (Starter.Flags.dir args.flags)
+            .relative (Starter.Flags.dir conf.flags)
+
+        fileNames =
+            Starter.FileNames.fileNames conf.flags.version conf.flags.commit
     in
     Json.Encode.object
-        [ ( "dir"
-          , args.dir
+        [ ( "outputCompiledJs", Json.Encode.string fileNames.outputCompiledJs )
+        , ( "outputCompiledJsProd", Json.Encode.string fileNames.outputCompiledJsProd )
+        , ( "dir"
+          , conf.dir
                 |> Starter.Flags.dirEncoder
           )
         , ( "file"
-          , args.file
+          , conf.file
                 |> Starter.Flags.fileEncoder
           )
         , ( "serverDev"
-          , { elmFileToCompile = .mainElm (Starter.Flags.file args.flags)
-            , dir = .devRoot (Starter.Flags.dir args.flags)
-            , outputCompiledJs = .dev (Starter.Flags.dir args.flags) ++ args.fileNames.outputCompiledJs
-            , indexHtml = relative ++ args.fileNames.indexHtml
+          , { elmFileToCompile = .mainElm (Starter.Flags.file conf.flags)
+            , dir = .devRoot (Starter.Flags.dir conf.flags)
+            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJs
+            , indexHtml = relative ++ conf.fileNames.indexHtml
             , relative = relative
-            , port_ = args.portDev
+            , port_ = conf.portDev
             , compilation = Starter.ElmLive.Debug
             , verbose = Starter.ElmLive.VerboseNo
             , pushstate = Starter.ElmLive.PushstateYes
             , reload = Starter.ElmLive.ReloadYes
             , hotReload = Starter.ElmLive.HotReloadYes
-            , dirBin = .bin (Starter.Flags.dir args.flags)
+            , ssl = Starter.ElmLive.SslNo
+            , dirBin = .bin (Starter.Flags.dir conf.flags)
+            , certificatesFolder = conf.dir.elmStartSrc
             }
                 |> Starter.ElmLive.elmLive
                 |> Starter.ElmLive.encoder
           )
         , ( "serverStatic"
-          , { elmFileToCompile = .mainElm (Starter.Flags.file args.flags)
-            , dir = .devRoot (Starter.Flags.dir args.flags)
-            , outputCompiledJs = .dev (Starter.Flags.dir args.flags) ++ args.fileNames.outputCompiledJs
-            , indexHtml = relative ++ args.fileNames.indexHtml
+          , { elmFileToCompile = .mainElm (Starter.Flags.file conf.flags)
+            , dir = .devRoot (Starter.Flags.dir conf.flags)
+            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJs
+            , indexHtml = relative ++ conf.fileNames.indexHtml
             , relative = relative
-            , port_ = args.portStatic
+            , port_ = conf.portStatic
             , compilation = Starter.ElmLive.Optimize
             , verbose = Starter.ElmLive.VerboseNo
             , pushstate = Starter.ElmLive.PushstateYes
             , reload = Starter.ElmLive.ReloadNo
             , hotReload = Starter.ElmLive.HotReloadNo
-            , dirBin = .bin (Starter.Flags.dir args.flags)
+            , ssl = Starter.ElmLive.SslNo
+            , dirBin = .bin (Starter.Flags.dir conf.flags)
+            , certificatesFolder = conf.dir.elmStartSrc
             }
                 |> Starter.ElmLive.elmLive
                 |> Starter.ElmLive.encoder
           )
         , ( "serverBuild"
-          , { elmFileToCompile = .mainElm (Starter.Flags.file args.flags)
-            , dir = .buildRoot (Starter.Flags.dir args.flags)
-            , outputCompiledJs = .dev (Starter.Flags.dir args.flags) ++ args.fileNames.outputCompiledJs
-            , indexHtml = args.fileNames.indexHtml
+          , { elmFileToCompile = .mainElm (Starter.Flags.file conf.flags)
+            , dir = .buildRoot (Starter.Flags.dir conf.flags)
+            , outputCompiledJs = .dev (Starter.Flags.dir conf.flags) ++ conf.fileNames.outputCompiledJs
+            , indexHtml = conf.fileNames.indexHtml
             , relative = relative
-            , port_ = args.portBuild
+            , port_ = conf.portBuild
             , compilation = Starter.ElmLive.Normal
             , verbose = Starter.ElmLive.VerboseNo
             , pushstate = Starter.ElmLive.PushstateNo
             , reload = Starter.ElmLive.ReloadNo
             , hotReload = Starter.ElmLive.HotReloadNo
-            , dirBin = .bin (Starter.Flags.dir args.flags)
+            , ssl = Starter.ElmLive.SslNo
+            , dirBin = .bin (Starter.Flags.dir conf.flags)
+            , certificatesFolder = conf.dir.elmStartSrc
             }
                 |> Starter.ElmLive.elmLive
                 |> Starter.ElmLive.encoder
@@ -141,72 +153,87 @@ encoder args =
         , ( "headless", Json.Encode.bool True )
         , ( "startingDomain"
           , Json.Encode.string
-                ("http://localhost:" ++ String.fromInt args.portStatic)
+                ("http://localhost:" ++ String.fromInt conf.portStatic)
           )
         , ( "batchesSize", Json.Encode.int 4 )
         , ( "pagesName", Json.Encode.string "index.html" )
         , ( "snapshots", Json.Encode.bool True )
         , ( "snapshotsQuality", Json.Encode.int 80 )
-        , ( "snapshotWidth", Json.Encode.int <| Maybe.withDefault 700 <| String.toInt <| Maybe.withDefault "" <| args.flags.snapshotWidth )
-        , ( "snapshotHeight", Json.Encode.int <| Maybe.withDefault 350 <| String.toInt <| Maybe.withDefault "" <| args.flags.snapshotHeight )
-        , ( "snapshotFileName", Json.Encode.string Starter.ConfMeta.conf.fileNames.snapshot )
+        , ( "snapshotWidth", Json.Encode.int <| Maybe.withDefault 700 <| String.toInt <| Maybe.withDefault "" <| conf.flags.snapshotWidth )
+        , ( "snapshotHeight", Json.Encode.int <| Maybe.withDefault 350 <| String.toInt <| Maybe.withDefault "" <| conf.flags.snapshotHeight )
+        , ( "snapshotFileName", Json.Encode.string fileNames.snapshot )
         , ( "mainConf", Starter.ConfMain.encoder Main.conf )
         , ( "htmlToReinject"
-          , args.htmlToReinject
-                |> List.map (\html -> Html.String.toString Starter.ConfMeta.conf.indentation html)
+          , conf.htmlToReinject
+                |> List.map (\html -> Html.String.toString Starter.ConfMeta.confMeta.indentation html)
                 |> String.join ""
                 |> Json.Encode.string
           )
+        , ( "flags", Starter.Flags.encoder conf.flags )
         , ( "files"
           , (Json.Encode.list <| file)
                 --
                 -- "/manifest.json"
                 --
-                [ ( args.fileNames.manifestJson
-                  , { iconSizes = args.iconsForManifest
-                    , themeColor = Starter.Flags.flagsToThemeColor args.flags
-                    , name = args.flags.name
-                    , nameLong = args.flags.nameLong
+                [ ( conf.fileNames.manifestJson
+                  , { iconSizes = conf.iconsForManifest
+                    , themeColor = Starter.Flags.toThemeColor conf.flags
+                    , name = conf.flags.name
+                    , nameLong = conf.flags.nameLong
                     }
                         |> Starter.Manifest.manifest relative
-                        |> Json.Encode.encode Starter.ConfMeta.conf.indentation
+                        |> Json.Encode.encode Starter.ConfMeta.confMeta.indentation
                   )
 
                 -- "/_redirects"
                 --
                 -- Netlify Configuration File
                 --
-                -- , ( args.fileNames.redirects
+                -- , ( conf.fileNames.redirects
                 --   , "/* /index.html 200"
                 --   )
                 -- "/service-worker.js"
                 --
-                , ( args.fileNames.serviceWorker
-                  , Starter.ServiceWorker.serviceWorker relative
+                , ( fileNames.serviceWorker
+                  , let
+                        -- Assets need to have different path
+                        assets =
+                            List.map
+                                (\( path, hash ) ->
+                                    ( String.replace conf.flags.dirAssets relative path, hash )
+                                )
+                                conf.flags.assets
+                    in
+                    Starter.ServiceWorker.serviceWorker
+                        { assets = assets
+                        , commit = conf.flags.commit
+                        , relative = relative
+                        , version = conf.flags.version
+                        }
                   )
 
                 -- "/index.html"
                 --
-                , ( args.fileNames.indexHtml
-                  , fileIndexHtml args.messageDoNotEditDisclaimer Starter.ConfMeta.conf.indentation args.fileIndexHtml
+                , ( fileNames.indexHtml
+                  , fileIndexHtml conf.messageDoNotEditDisclaimer Starter.ConfMeta.confMeta.indentation conf.fileIndexHtml
                   )
 
                 -- "/robots.txt"
                 --
                 -- https://www.robotstxt.org/robotstxt.html
                 --
-                , ( args.fileNames.robotsTxt
+                , ( conf.fileNames.robotsTxt
                   , [ "User-agent: *"
                     , "Disallow:"
-                    , "Sitemap: " ++ args.flags.homepage ++ args.fileNames.sitemap
+                    , "Sitemap: " ++ conf.flags.homepage ++ conf.fileNames.sitemap
                     ]
                         |> String.join "\n"
                   )
 
                 -- "/sitemap.txt"
                 --
-                , ( args.fileNames.sitemap
-                  , String.join "\n" <| List.map (\url -> String.replace relative "" args.flags.homepage ++ url) Main.conf.urls
+                , ( conf.fileNames.sitemap
+                  , String.join "\n" <| List.map (\url -> String.replace relative "" conf.flags.homepage ++ url) Main.conf.urls
                   )
                 ]
           )

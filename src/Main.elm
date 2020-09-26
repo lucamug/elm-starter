@@ -294,7 +294,7 @@ view : Model -> Html.Html Msg
 view model =
     let
         themeColor =
-            Starter.Flags.flagsToThemeColorRgb model.flags.starter
+            Starter.Flags.toThemeColorRgb model.flags.starter
     in
     Html.div
         [ Html.Attributes.id "elm" ]

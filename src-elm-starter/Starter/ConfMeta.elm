@@ -1,38 +1,12 @@
 module Starter.ConfMeta exposing
-    ( Conf
-    , FileNames
-    , conf
+    ( ConfMeta
+    , confMeta
     )
 
 import Starter.Version
 
 
-type alias FileNames =
-    { outputCompiledJs : String
-    , indexHtml : String
-    , manifestJson : String
-    , redirects : String
-    , robotsTxt : String
-    , serviceWorker : String
-    , sitemap : String
-    , snapshot : String
-    }
-
-
-fileNames : FileNames
-fileNames =
-    { manifestJson = "/manifest.json"
-    , redirects = "/_redirects"
-    , robotsTxt = "/robots.txt"
-    , outputCompiledJs = "/elm.js"
-    , indexHtml = "/index.html"
-    , serviceWorker = "/service-worker.js"
-    , sitemap = "/sitemap.txt"
-    , snapshot = "/snapshot.jpg"
-    }
-
-
-type alias Conf =
+type alias ConfMeta =
     -- ports
     { portBuild : Int
     , portStatic : Int
@@ -50,17 +24,14 @@ type alias Conf =
     , messageLoading : String
     , messageYouNeedToEnableJavascript : String
 
-    -- file names
-    , fileNames : FileNames
-
     -- tags
     , tagLoader : String
     , tagNotification : String
     }
 
 
-conf : Conf
-conf =
+confMeta : ConfMeta
+confMeta =
     -- ports
     { portStatic = 7000
     , portDev = 8000
@@ -77,9 +48,6 @@ conf =
     , messageEnableJavascriptForBetterExperience = "Enable Javascript for a better experience."
     , messageLoading = "L O A D I N G . . ."
     , messageDoNotEditDisclaimer = "Generated file ** DO NOT EDIT DIRECTLY ** Edit Elm files instead"
-
-    -- file names
-    , fileNames = fileNames
 
     -- tags
     , tagLoader = prefix ++ "notification"

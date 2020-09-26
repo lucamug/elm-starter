@@ -5,12 +5,12 @@ module Starter.Flags exposing
     , Flags
     , dir
     , dirEncoder
+    , encoder
     , file
     , fileEncoder
-    , flagsEncoder
-    , flagsToThemeColor
-    , flagsToThemeColorRgb
-    , relativeFromFlags
+    , toRelative
+    , toThemeColor
+    , toThemeColorRgb
     )
 
 import Json.Encode
@@ -55,13 +55,15 @@ type alias Flags =
     , dirBin : String
     , dirIgnoredByGit : String
     , dirTemp : String
+    , dirAssets : String
     , fileElmWorker : String
+    , assets : List ( String, String )
     }
 
 
 maybe : (a -> Json.Encode.Value) -> Maybe a -> Json.Encode.Value
-maybe encoder =
-    Maybe.map encoder >> Maybe.withDefault Json.Encode.null
+maybe encoder_ =
+    Maybe.map encoder_ >> Maybe.withDefault Json.Encode.null
 
 
 colorEncoder : Color -> Json.Encode.Value
@@ -73,8 +75,8 @@ colorEncoder color =
         ]
 
 
-flagsEncoder : Flags -> Json.Encode.Value
-flagsEncoder flags =
+encoder : Flags -> Json.Encode.Value
+encoder flags =
     Json.Encode.object
         -- From package.json
         [ ( "name", Json.Encode.string flags.name )
@@ -100,12 +102,14 @@ flagsEncoder flags =
         , ( "dirBin", Json.Encode.string flags.dirBin )
         , ( "dirIgnoredByGit", Json.Encode.string flags.dirIgnoredByGit )
         , ( "dirTemp", Json.Encode.string flags.dirTemp )
+        , ( "dirAssets", Json.Encode.string flags.dirAssets )
         , ( "fileElmWorker", Json.Encode.string flags.fileElmWorker )
+        , ( "assets", Json.Encode.list (Json.Encode.list Json.Encode.string) (List.map (\( a, b ) -> [ a, b ]) flags.assets) )
         ]
 
 
-flagsToThemeColorRgb : Flags -> { blue : Int, green : Int, red : Int }
-flagsToThemeColorRgb flags =
+toThemeColorRgb : Flags -> { blue : Int, green : Int, red : Int }
+toThemeColorRgb flags =
     case flags.themeColor of
         Just color ->
             { red = Maybe.withDefault 255 <| String.toInt color.red
@@ -117,11 +121,11 @@ flagsToThemeColorRgb flags =
             { red = 255, green = 255, blue = 255 }
 
 
-flagsToThemeColor : Flags -> String
-flagsToThemeColor flags =
+toThemeColor : Flags -> String
+toThemeColor flags =
     let
         color =
-            flagsToThemeColorRgb flags
+            toThemeColorRgb flags
     in
     "rgb(" ++ String.join "," (List.map String.fromInt [ color.red, color.green, color.blue ]) ++ ")"
 
@@ -148,26 +152,27 @@ type alias Dir =
     }
 
 
-relativeFromFlags : { a | homepage : String } -> String
-relativeFromFlags flags =
-    flags.homepage
-        |> Url.fromString
-        |> Maybe.map .path
-        |> Maybe.withDefault ""
-        |> (\relative ->
-                if relative == "/" then
-                    ""
+toRelative : { a | homepage : String } -> String
+toRelative flags =
+    let
+        relative =
+            flags.homepage
+                |> Url.fromString
+                |> Maybe.map .path
+                |> Maybe.withDefault ""
+    in
+    if relative == "/" then
+        ""
 
-                else
-                    relative
-           )
+    else
+        relative
 
 
 dir : Flags -> Dir
 dir flags =
     let
         relative =
-            relativeFromFlags flags
+            toRelative flags
 
         devRoot =
             flags.dirIgnoredByGit ++ "/dev"
@@ -183,7 +188,7 @@ dir flags =
     , relative = relative
 
     -- Assets
-    , assets = flags.dirPw ++ "/assets/prod"
+    , assets = flags.dirAssets
     , assetsDevSource = flags.dirPw ++ "/assets/dev"
 
     -- Working dir
@@ -235,7 +240,7 @@ type alias File =
 file : Flags -> File
 file flags =
     { elmWorker = flags.fileElmWorker
-    , jsStarter = .elmStartSrc (dir flags) ++ "/starter.js"
+    , jsStarter = .elmStartSrc (dir flags) ++ "/elm-starter"
     , indexElm = .src (dir flags) ++ "/Index.elm"
     , mainElm = .src (dir flags) ++ "/Main.elm"
     }

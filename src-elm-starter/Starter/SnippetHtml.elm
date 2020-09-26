@@ -15,20 +15,21 @@ import Html.String.Attributes exposing (..)
 import Html.String.Extra exposing (..)
 import Starter.ConfMain
 import Starter.ConfMeta
+import Starter.FileNames
 import Starter.Flags
 import Starter.SnippetCss
 
 
 {-| PWA stuff
 -}
-
-
-
--- pwa : List (Html msg)
-
-
-pwa : String -> String -> List (Html msg)
-pwa relative themeColor =
+pwa :
+    { commit : String
+    , relative : String
+    , themeColor : String
+    , version : String
+    }
+    -> List (Html msg)
+pwa { relative, version, commit, themeColor } =
     -- DNS preconnect and prefetch for
     -- https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js
     [ link [ rel "preconnect", href "https://storage.googleapis.com", crossorigin "true" ] []
@@ -37,7 +38,7 @@ pwa relative themeColor =
     -- PWA
     , meta [ name "theme-color", content themeColor ] []
     , meta [ name "mobile-web-app-capable", content "yes" ] []
-    , link [ rel "manifest", href (relative ++ Starter.ConfMeta.conf.fileNames.manifestJson) ] []
+    , link [ rel "manifest", href (relative ++ .manifestJson (Starter.FileNames.fileNames version commit)) ] []
 
     -- iOS
     , meta [ name "apple-mobile-web-app-capable", content "yes" ] []
@@ -51,28 +52,28 @@ pwa relative themeColor =
 <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started>
 
 -}
-
-
-
--- previewCards : List (Html msg)
-
-
-previewCards : Starter.Flags.Flags -> Starter.ConfMain.Conf -> List (Html msg)
-previewCards flags mainConf =
+previewCards :
+    { commit : String
+    , flags : Starter.Flags.Flags
+    , mainConf : b
+    , version : String
+    }
+    -> List (Html msg)
+previewCards { flags, mainConf, version, commit } =
     --
     -- From https://medium.com/slack-developer-blog/everything-you-ever-wanted-to-know-about-unfurling-but-were-afraid-to-ask-or-how-to-make-your-e64b4bb9254
     --
     -- facebook open graph tags
     let
         relative =
-            Starter.Flags.relativeFromFlags flags
+            Starter.Flags.toRelative flags
     in
     []
         ++ [ meta [ property_ "og:type", content "website" ] []
            , meta [ property_ "og:url", content flags.homepage ] []
            , meta [ property_ "og:title", content flags.nameLong ] []
            , meta [ property_ "og:description", content flags.description ] []
-           , meta [ property_ "og:image", content (relative ++ Starter.ConfMeta.conf.fileNames.snapshot) ] []
+           , meta [ property_ "og:image", content (relative ++ .snapshot (Starter.FileNames.fileNames version commit)) ] []
 
            -- twitter card tags additive with the og: tags
            , meta [ name "twitter:card", content "summary_large_image" ] []
@@ -94,7 +95,7 @@ previewCards flags mainConf =
         ++ [ meta [ name "twitter:domain", value flags.homepage ] []
            , meta [ name "twitter:title", value flags.nameLong ] []
            , meta [ name "twitter:description", value flags.description ] []
-           , meta [ name "twitter:image", content (relative ++ Starter.ConfMeta.conf.fileNames.snapshot) ] []
+           , meta [ name "twitter:image", content (relative ++ .snapshot (Starter.FileNames.fileNames version commit)) ] []
            , meta [ name "twitter:url", value flags.homepage ] []
 
            -- , meta [ name "twitter:label1", value "Opens in Theaters" ] []
@@ -120,11 +121,11 @@ messageYouNeedToEnableJavascript : List (Html msg)
 messageYouNeedToEnableJavascript =
     [ noscript []
         [ div
-            [ class Starter.ConfMeta.conf.tagNotification
+            [ class Starter.ConfMeta.confMeta.tagNotification
             , style "top" "0"
             , style "height" "100vh"
             ]
-            [ text Starter.ConfMeta.conf.messageYouNeedToEnableJavascript ]
+            [ text Starter.ConfMeta.confMeta.messageYouNeedToEnableJavascript ]
         ]
     ]
 
@@ -133,10 +134,10 @@ messageEnableJavascriptForBetterExperience : List (Html msg)
 messageEnableJavascriptForBetterExperience =
     [ noscript []
         [ div
-            [ class Starter.ConfMeta.conf.tagNotification
+            [ class Starter.ConfMeta.confMeta.tagNotification
             , style "bottom" "0"
             ]
-            [ text Starter.ConfMeta.conf.messageEnableJavascriptForBetterExperience ]
+            [ text Starter.ConfMeta.confMeta.messageEnableJavascriptForBetterExperience ]
         ]
     ]
 
@@ -144,12 +145,12 @@ messageEnableJavascriptForBetterExperience =
 messageLoading : List (Html msg)
 messageLoading =
     [ div
-        [ id Starter.ConfMeta.conf.tagLoader
-        , class Starter.ConfMeta.conf.tagNotification
+        [ id Starter.ConfMeta.confMeta.tagLoader
+        , class Starter.ConfMeta.confMeta.tagNotification
         , style "height" "100vh"
         , style "display" "none"
         ]
-        [ text Starter.ConfMeta.conf.messageLoading ]
+        [ text Starter.ConfMeta.confMeta.messageLoading ]
     ]
 
 
@@ -158,7 +159,7 @@ messageLoadingOn =
     [ script []
         [ textUnescaped <|
             "document.getElementById('"
-                ++ Starter.ConfMeta.conf.tagLoader
+                ++ Starter.ConfMeta.confMeta.tagLoader
                 ++ "').style.display = 'block';"
         ]
     ]
@@ -169,7 +170,7 @@ messageLoadingOff =
     [ script []
         [ textUnescaped <|
             "document.getElementById('"
-                ++ Starter.ConfMeta.conf.tagLoader
+                ++ Starter.ConfMeta.confMeta.tagLoader
                 ++ "').style.display = 'none';"
         ]
     ]
@@ -180,6 +181,6 @@ messagesStyle =
     [ style_ []
         [ text <|
             Starter.SnippetCss.noJsAndLoadingNotifications
-                Starter.ConfMeta.conf.tagNotification
+                Starter.ConfMeta.confMeta.tagNotification
         ]
     ]
