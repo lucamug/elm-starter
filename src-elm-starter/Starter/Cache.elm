@@ -1,9 +1,7 @@
 module Starter.Cache exposing (stuffToCache)
 
 import Main
-import Starter.ConfMeta
 import Starter.FileNames
-import Starter.Icon
 
 
 stuffToCache : String -> String -> String -> List ( String, String ) -> List ( String, String )

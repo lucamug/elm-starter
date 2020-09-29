@@ -13,7 +13,6 @@ module Starter.SnippetHtml exposing
 import Html.String exposing (..)
 import Html.String.Attributes exposing (..)
 import Html.String.Extra exposing (..)
-import Starter.ConfMain
 import Starter.ConfMeta
 import Starter.FileNames
 import Starter.Flags
@@ -59,44 +58,44 @@ previewCards :
     , version : String
     }
     -> List (Html msg)
-previewCards { flags, mainConf, version, commit } =
+previewCards args =
     --
     -- From https://medium.com/slack-developer-blog/everything-you-ever-wanted-to-know-about-unfurling-but-were-afraid-to-ask-or-how-to-make-your-e64b4bb9254
     --
     -- facebook open graph tags
     let
         relative =
-            Starter.Flags.toRelative flags
+            Starter.Flags.toRelative args.flags
     in
     []
         ++ [ meta [ property_ "og:type", content "website" ] []
-           , meta [ property_ "og:url", content flags.homepage ] []
-           , meta [ property_ "og:title", content flags.nameLong ] []
-           , meta [ property_ "og:description", content flags.description ] []
-           , meta [ property_ "og:image", content (relative ++ .snapshot (Starter.FileNames.fileNames version commit)) ] []
+           , meta [ property_ "og:url", content args.flags.homepage ] []
+           , meta [ property_ "og:title", content args.flags.nameLong ] []
+           , meta [ property_ "og:description", content args.flags.description ] []
+           , meta [ property_ "og:image", content (relative ++ .snapshot (Starter.FileNames.fileNames args.version args.commit)) ] []
 
            -- twitter card tags additive with the og: tags
            , meta [ name "twitter:card", content "summary_large_image" ] []
            ]
-        ++ (case flags.twitterSite of
+        ++ (case args.flags.twitterSite of
                 Just twitterSite ->
                     [ meta [ name "twitter:site", content ("@" ++ twitterSite) ] [] ]
 
                 Nothing ->
                     []
            )
-        ++ (case flags.twitterAuthor of
+        ++ (case args.flags.twitterAuthor of
                 Just twitterAuthor ->
                     [ meta [ name "twitter:site", content ("@" ++ twitterAuthor) ] [] ]
 
                 Nothing ->
                     []
            )
-        ++ [ meta [ name "twitter:domain", value flags.homepage ] []
-           , meta [ name "twitter:title", value flags.nameLong ] []
-           , meta [ name "twitter:description", value flags.description ] []
-           , meta [ name "twitter:image", content (relative ++ .snapshot (Starter.FileNames.fileNames version commit)) ] []
-           , meta [ name "twitter:url", value flags.homepage ] []
+        ++ [ meta [ name "twitter:domain", value args.flags.homepage ] []
+           , meta [ name "twitter:title", value args.flags.nameLong ] []
+           , meta [ name "twitter:description", value args.flags.description ] []
+           , meta [ name "twitter:image", content (relative ++ .snapshot (Starter.FileNames.fileNames args.version args.commit)) ] []
+           , meta [ name "twitter:url", value args.flags.homepage ] []
 
            -- , meta [ name "twitter:label1", value "Opens in Theaters" ] []
            -- , meta [ name "twitter:data1", value "December 1, 2015" ] []

@@ -3,8 +3,6 @@ module Starter.FileNames exposing
     , fileNames
     )
 
-import Starter.Version
-
 
 type alias FileNames =
     { outputCompiledJs : String
