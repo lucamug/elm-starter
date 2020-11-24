@@ -213,8 +213,8 @@ function bootstrap (env, callback) {
                     }
 
                 // From Git
-                , commit: commit
-                , branch: branch
+                , commit: commit.toString()
+                , branch: branch.toString()
                 
                 // From starter.js
                 , env: env
@@ -475,7 +475,6 @@ function mkdir (path) {
 function symlinkDir (srcDir, dstDir) {
     if (!fs.existsSync(srcDir)) {
         // source directory doesn't exists
-        console.log("!!!");
         return;
     }
     const list = fs.readdirSync(srcDir);
