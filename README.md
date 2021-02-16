@@ -120,7 +120,7 @@ Let's suppose your existing project is in `my-elm-app`
     npm install --save-dev chokidar-cli
     npm install --save-dev concurrently
     npm install --save-dev elm
-    npm install --save-dev elm-live
+    npm install --save-dev elm-go
     npm install --save-dev html-minifier
     npm install --save-dev puppeteer
     npm install --save-dev terser
@@ -406,7 +406,7 @@ Note
         * [function command_generateDevFiles]
             * Clean the `developmennt` working folder
             * Generate files as per `conf.json` and also copy over assets
-            * Touch `src/Main.elm` so that `elm-live` recompile and the browser refresh
+            * Touch `src/Main.elm` so that `elm-go` recompile and the browser refresh
         * Starts two commands: `serverDev` and `watchStartElm` (see below)
             
 
@@ -415,7 +415,7 @@ Note
 
     * [function bootstrap] (see above)
     * [function command_serverDev]
-        * start `elm-live` at http://localhost:8000
+        * start `elm-go` at http://localhost:8000
 
 
 

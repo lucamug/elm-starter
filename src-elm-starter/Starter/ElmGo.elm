@@ -1,4 +1,4 @@
-module Starter.ElmLive exposing
+module Starter.ElmGo exposing
     ( Compilation(..)
     , ElmLiveArgs
     , HotReload(..)
@@ -6,7 +6,7 @@ module Starter.ElmLive exposing
     , Reload(..)
     , Ssl(..)
     , Verbose(..)
-    , elmLive
+    , elmGo
     , encoder
     )
 
@@ -62,14 +62,14 @@ type Ssl
     | SslNo
 
 
-elmLive : ElmLiveArgs -> { command : String, parameters : List String }
-elmLive args =
-    -- { command = args.dirBin ++ "/elm-live"
+elmGo : ElmLiveArgs -> { command : String, parameters : List String }
+elmGo args =
+    -- { command = args.dirBin ++ "/elm-go"
     { command = "node"
     , parameters =
-        [ "node_modules/.bin/elm-live"
+        [ "node_modules/.bin/elm-go"
 
-        -- [ "elm-live/bin/elm-live.js"
+        -- [ "elm-go/bin/elm-go.js"
         , args.elmFileToCompile
         , "--path-to-elm=" ++ args.dirBin ++ "/elm"
         , "--dir=" ++ args.dir
