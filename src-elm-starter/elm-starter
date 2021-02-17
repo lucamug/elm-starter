@@ -438,9 +438,7 @@ function runTerser (fileName) {
 
 function startCommand (cmd, parameters, callback) {
     callback = callback || function(){};
-    const command = child_process.spawn(cmd, parameters);
-    command.stdout.on('data', function (data) { process.stdout.write(data.toString()); });
-    command.stderr.on('data', function (data) { process.stdout.write(data.toString()); });
+    const command = child_process.spawn(cmd, parameters, {stdio: "inherit"});
     command.on('close', function(code) {
         return callback(code);
     });
