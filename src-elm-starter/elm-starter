@@ -366,7 +366,8 @@ async function processUrl (url, browser, conf) {
         mkdir( `${conf.dir.buildRoot}${url}` );
     }
     let html = await page.content();
-    html = html.replace('</body>',`${conf.htmlToReinject}</body>`);
+    html = html.replace('</head>',`${conf.htmlToReinjectInHead}</head>`);
+    html = html.replace('</body>',`${conf.htmlToReinjectInBody}</body>`);
     console.log(styleSubtitle, `    * ${conf.startingDomain}${url}`);
     const minHtml = html_minifier.minify(html,
         { minifyCSS: true
