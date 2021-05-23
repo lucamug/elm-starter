@@ -1,4 +1,8 @@
-module Index exposing (htmlToReinject, index)
+module Index exposing
+    ( htmlToReinjectInBody
+    , htmlToReinjectInHead
+    , index
+    )
 
 import Html.String exposing (..)
 import Html.String.Attributes exposing (..)
@@ -110,6 +114,11 @@ index flags =
         ]
 
 
-htmlToReinject : a -> List b
-htmlToReinject _ =
+htmlToReinjectInHead : a -> List b
+htmlToReinjectInHead _ =
+    []
+
+
+htmlToReinjectInBody : a -> List b
+htmlToReinjectInBody _ =
     []

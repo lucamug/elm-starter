@@ -189,9 +189,9 @@ This case require a different approach. You can see an example in the [elm-spa-e
 The main differences compared to the above approach are:
 
 * You **don't** need to create a specific `<div>` with id `elm`.
-* You need to move all Javascript section of the page into the `htmlToReinject` section (see [Index.elm](https://github.com/lucamug/elm-spa-example/blob/master/src/Index.elm) as example).
+* You need to move all Javascript section of the page into the `htmlToReinjectInBody` section (see [Index.elm](https://github.com/lucamug/elm-spa-example/blob/master/src/Index.elm) as example).
 
-`htmlToReinject` will be injected after the page is generated during the build process assuring that the system will work also in this case.
+`htmlToReinjectInBody` will be injected after the page is generated during the build process assuring that the system will work also in this case.
 
 ## Netlify
 
@@ -236,11 +236,18 @@ The `elm-spa-example` partially works without Javascript. You can browse across 
 
 `elm-starter` and `elm-todomvc` use `Browser.element`, while `elm-spa-example` use `Browser.application`.
 
-The setup for these two cases is a bit different. `Browser.application` requires to use `htmlToReinject` (see `Index.elm`) because Elm is wiping out all the content in the body. Also the node where Elm attach itself needs to be removed (see `node.remove()` ).
+The setup for these two cases is a bit different. `Browser.application` requires to use `htmlToReinjectInBody` (see `Index.elm`) because Elm is wiping out all the content in the body. Also the node where Elm attach itself needs to be removed (see `node.remove()` ).
 
 The working folder of `elm-starter` is `elm-stuff/elm-starter-files`. These files are automatically generated and should not be edited directly, unless during some debugging process.
 
 ## Advanced stuff
+
+## `htmlToReinjectInHead` and `htmlToReinjectInBody`
+
+These two functions are used to re-inject some HTML after Puppeteer generated the page. This can be useful in several cases:
+
+* Using `Browser.document` or `Browser.application` (see above).
+* Using Google Tags, Google Analytics or other advanced JavaScript dependencies that should run only once. In these cases better not to add these JavaScript snipped during the development, but inject them using `htmlToReinjectInHead` only after the generation of HTML is done.
 
 ## File generation
 

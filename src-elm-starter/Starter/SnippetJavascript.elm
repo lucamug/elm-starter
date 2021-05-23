@@ -119,6 +119,8 @@ portPushUrl =
 if (ElmApp && ElmApp.ports && ElmApp.ports.pushUrl) {
     ElmApp.ports.pushUrl.subscribe(function(url) {
         history.pushState({}, '', url);
+        // Comment the next line if you don't want pages to scroll to the
+        // top automatically, everytime they switch
         window.scrollTo(0, 0);
         if (ElmApp && ElmApp.ports && ElmApp.ports.onUrlChange) {
             ElmApp.ports.onUrlChange.send(location.href);

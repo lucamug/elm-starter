@@ -46,7 +46,8 @@ type alias Conf msg =
     , file : Starter.Flags.File
     , fileNames : Starter.FileNames.FileNames
     , fileIndexHtml : Html.String.Html msg
-    , htmlToReinject : List (Html.String.Html msg)
+    , htmlToReinjectInBody : List (Html.String.Html msg)
+    , htmlToReinjectInHead : List (Html.String.Html msg)
     , iconsForManifest : List Int
     , portBuild : Int
     , portDev : Int
@@ -63,7 +64,8 @@ conf_ flags =
         , file = Starter.Flags.file flags
         , fileNames = Starter.FileNames.fileNames flags.version flags.commit
         , fileIndexHtml = Index.index flags
-        , htmlToReinject = Index.htmlToReinject flags
+        , htmlToReinjectInBody = Index.htmlToReinjectInBody flags
+        , htmlToReinjectInHead = Index.htmlToReinjectInHead flags
         , iconsForManifest = Starter.Icon.iconsForManifest
         , portBuild = Starter.ConfMeta.confMeta.portBuild
         , portDev = Starter.ConfMeta.confMeta.portDev
@@ -163,8 +165,14 @@ encoder conf =
         , ( "snapshotHeight", Json.Encode.int <| Maybe.withDefault 350 <| String.toInt <| Maybe.withDefault "" <| conf.flags.snapshotHeight )
         , ( "snapshotFileName", Json.Encode.string fileNames.snapshot )
         , ( "mainConf", Starter.ConfMain.encoder Main.conf )
-        , ( "htmlToReinject"
-          , conf.htmlToReinject
+        , ( "htmlToReinjectInBody"
+          , conf.htmlToReinjectInBody
+                |> List.map (\html -> Html.String.toString Starter.ConfMeta.confMeta.indentation html)
+                |> String.join ""
+                |> Json.Encode.string
+          )
+        , ( "htmlToReinjectInHead"
+          , conf.htmlToReinjectInHead
                 |> List.map (\html -> Html.String.toString Starter.ConfMeta.confMeta.indentation html)
                 |> String.join ""
                 |> Json.Encode.string
