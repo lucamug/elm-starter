@@ -60,8 +60,17 @@ console.info
 
 registerServiceWorker : String -> String
 registerServiceWorker relative =
+    --
+    -- 2021.06.18  We added location.reload() in SnippetJavascript.elm to
+    -- solve a problem about the page not refreshing after an update.
+    --
+    -- We also added "skipWaiting" in ServiceWorker.elm for the
+    -- same issue.
+    --
+    -- https://stackoverflow.com/questions/41891031/refresh-page-on-controllerchange-in-service-worker
+    --
+    -- https://developers.google.com/web/tools/workbox/guides/get-started
     selfInvoking <| """
-// From https://developers.google.com/web/tools/workbox/guides/get-started
 if (location.hostname === "localhost") {
     console.log("NOT loading the service worker in development");
 } else {
@@ -70,6 +79,26 @@ if (location.hostname === "localhost") {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('""" ++ relative ++ """/service-worker.js').then(function(registration) {
                 // Registration was successful
+
+                if (!navigator.serviceWorker.controller) {
+                    return
+                }
+
+                registration.addEventListener('updatefound', function () {
+                    const newWorker = registration.installing
+                    newWorker.state
+              
+                    var refreshing
+              
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state == 'activated') {
+                            if (refreshing) return
+                            window.location.reload()
+                            refreshing = true
+                        }
+                    })
+                })
+
             }, function(err) {
                 // registration failed :(
             });
