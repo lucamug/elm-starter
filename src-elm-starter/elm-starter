@@ -181,14 +181,14 @@ function bootstrap (env, callback) {
     const file =
         { elmWorker:    `${dirPw}/src-elm-starter/Worker.elm`
         }
-    const fielNameOutput = `${dir.temp}/worker.js`;
-    const command = `${dir.bin}/elm make ${file.elmWorker} --output=${fielNameOutput}`;
+    const fileNameOutput = `${dir.temp}/worker.js`;
+    const command = `${dir.bin}/elm make ${file.elmWorker} --output=${fileNameOutput}`;
     child_process.exec(command, (error, out) => {
         if (error) throw error;
         // Temporary silencing Elm warnings
         const consoleWarn = console.warn;
         console.warn = function() {};
-        const Elm = require(fielNameOutput);
+        const Elm = require(fileNameOutput);
         // Restoring warnings
         console.warn = consoleWarn;
         var app = Elm.Elm.Worker.init(
