@@ -286,10 +286,10 @@ function command_buildUsingServer (conf) {
     generateFiles(conf, conf.dir.build);
     console.log(styleSubtitle, `Compiling Elm`);
     const command = `${conf.dir.bin}/elm make ${conf.file.mainElm} --output=${conf.dir.build}/${conf.outputCompiledJsProd} --optimize`;
-    child_process.exec(command, (error, out) => {
+    child_process.exec(command, async (error, out) => {
         if (error) throw error;
         // Going back to the original directory
-        minifyJs(conf, `${conf.outputCompiledJsProd}`);
+        await minifyJs(conf, `${conf.outputCompiledJsProd}`);
         console.log(styleSubtitle, `Copying assets`);
         copyDir(conf.dir.assets, conf.dir.build);
         generateStaticPages(conf);
@@ -387,8 +387,8 @@ async function processUrl (url, browser, conf) {
     await page.close();
 }
 
-function minifyJs (conf, fileName) {
-    runTerser(`${conf.dir.build}/${fileName}`);
+async function minifyJs (conf, fileName) {
+    await runTerser(`${conf.dir.build}/${fileName}`);
 }
 
 function generateFiles(conf, dest) {
@@ -429,10 +429,10 @@ function runHtmlMinifier (fileName) {
     fs.writeFileSync(fileName, minCode);
 }
 
-function runTerser (fileName) {
+async function runTerser (fileName) {
     const code = fs.readFileSync(fileName, 'utf8');
     // TODO - Add special arguments to terser, to optimize pure functions
-    const minCode = terser.minify(code);
+    const minCode = await terser.minify(code);
     if (minCode.error) throw minCode.error;
     fs.writeFileSync(fileName, minCode.code);
 }
