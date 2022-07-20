@@ -42,7 +42,7 @@
         "html-minifier": "^4.0.0",
         "puppeteer": "^11.0.0",
         "puppeteer-core": "^11.0.0",
-        "terser": "^5.9.0"
+        "terser": "^5.14.2"
     },
     "dependencies": {
     }
